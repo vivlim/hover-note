@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -24,6 +25,8 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private boolean focused = true;
 	private WindowManager.LayoutParams winparams;
 	
+	private ScaleGestureDetector ScaleGD;
+	
 	private WindowManager wm;
 	
 	private Context context;
@@ -40,16 +43,21 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 						WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 						WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 		
-		winparams.gravity = Gravity.RIGHT | Gravity.TOP;
+		winparams.gravity = Gravity.TOP;
 		winparams.setTitle("HELLO!");
 		winparams.height = 60;
+		winparams.horizontalMargin = 10;
 		this.setBackgroundColor(Color.BLUE);
 		
 		tv = new TextView(context);
 		tv.setText("Text");
+	
 		
 		ed = new EditText(context);
 		ed.setText("default");
+		
+		ViewGroup.LayoutParams edparams = ed.getLayoutParams();
+//		edparams.width = ViewGroup.LayoutParams.MATCH_PARENT; // not working. need to move layout code to xml
 		
 		this.addView(tv);
 		this.addView(ed);
@@ -57,7 +65,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		this.setOnTouchListener(this);
 		this.setOnClickListener(this);
 		this.setOnKeyListener(this);
+		ed.setOnTouchListener(this);
 		ed.setOnKeyListener(this);
+		
 		wm.addView(this, winparams);
 		
 	}
@@ -109,7 +119,40 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 			this.unfocus();
 		}
 		else
+		{
+			if(v == ed){ // pass through to the text field if we're touching it
+				ed.onTouchEvent(me);
+			}
 			this.focus();
+			
+			if(me.getPointerCount() > 1){
+		        
+				final int location[] = { 0, 0 };
+			    v.getLocationOnScreen(location);
+
+				float y1 = me.getY(0);
+				float y2 = me.getY(1);
+				
+				float absy1 = (int)(winparams.y + y1);
+				float absy2 = (int)(winparams.y + y2);
+				
+				
+				
+				//if(absy1 > absy2){int temp = absy2; absy2 = absy1; absy1 = temp;}
+				
+				winparams.y = (int)((absy1+absy2)/2);
+				
+				//winparams.height = (int)(absy2-absy1); // resizing with two-finger gesture is jittery. do something else
+
+//				tv.setText(Float.toString(y1));
+				
+				wm.updateViewLayout(this, winparams);
+		    	
+			}
+			
+			
+			
+		}
 		return true;
 	}
 }
