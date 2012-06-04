@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.ClipboardManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,6 +28,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	private EditText ed;
 	private Button bCopy;
+	private Button bPaste;
 	
 	private boolean focused = true;
 	private WindowManager.LayoutParams winparams;
@@ -37,6 +39,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private ClipboardManager clipboard;
 	
 	private Context context;
+	
+	private Drawable drActiveRect;
+	private Drawable drInactiveRect;
 	
 	public OverlayView(Context context, WindowManager wm){
 		super(context);
@@ -58,7 +63,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		//winparams.height = 60;
 		winparams.height = 120;
 		winparams.horizontalMargin = 10;
-		this.setBackgroundColor(Color.BLUE);
+		
+		drActiveRect = this.getResources().getDrawable(R.drawable.activerectangle);
+		drInactiveRect = this.getResources().getDrawable(R.drawable.inactiverectangle);
+		this.setBackgroundDrawable(drInactiveRect);
+		this.invalidate();
 		
 //		tv = new TextView(context);
 //		tv.setText("Text");
@@ -67,19 +76,19 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 //		ed = new EditText(context);
 //		ed.setText("default");
 		
+		
+		//Buttons
 		bCopy = (Button)findViewById(R.id.bCopy);
+		bPaste = (Button)findViewById(R.id.bPaste);
 		
-//		edparams.width = ViewGroup.LayoutParams.MATCH_PARENT; // not working. need to move layout code to xml
-		
-//		this.addView(tv);
-//		this.addView(ed);
-		
+		// Assign listeners
 		this.setOnTouchListener(this);
 		this.setOnClickListener(this);
 		this.setOnKeyListener(this);
 		ed.setOnTouchListener(this);
 		ed.setOnKeyListener(this);
 		bCopy.setOnTouchListener(this);
+		bPaste.setOnTouchListener(this);
 		
 		wm.addView(this, winparams);
 		
@@ -89,7 +98,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	public void focus(){		
 		this.focused = true;
-		this.setBackgroundColor(Color.BLUE); // visual cue
+		this.setBackgroundDrawable(drActiveRect); // visual cue
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL; // set this flag on
 		winparams.flags |= WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH; // this too, gets unset when FLAG_NOT_TOUCH_MODAL is turned off.
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag off
@@ -101,7 +110,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	public void unfocus(){	
 		this.focused = false;
-		this.setBackgroundColor(Color.BLACK); // visual cue
+		this.setBackgroundDrawable(drInactiveRect); // visual cue
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL; // set this flag off
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag on
     	wm.updateViewLayout(this, winparams);
@@ -141,6 +150,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 				v.onTouchEvent(me);
 				if(v == bCopy){
 					clipboard.setText(ed.getText());
+					Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
+				}else if(v == bPaste){
+					//ed.append(clipboard.getText(), ed.get);
+					Toast.makeText(context, "Pasting is not yet implemented!", Toast.LENGTH_SHORT).show();
 				}
 			}
 				

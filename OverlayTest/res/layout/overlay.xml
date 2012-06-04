@@ -2,21 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    
     android:orientation="vertical" >
-
+
     <EditText
         android:id="@+id/ed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
+        android:layout_height="64dp"
+        android:ems="10"
+        android:textSize="16dip" >
 
         <requestFocus />
     </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/bCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bCopy" />
+
+        <Button
+            android:id="@+id/bPaste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bPaste" />
 
-    <Button
-        android:id="@+id/bCopy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bCopy" />
+        <Button
+            android:id="@+id/bFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bFull" />
+
+        <Button
+            android:id="@+id/bClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bClose" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -4,5 +4,8 @@
     <string name="hello">Hello World, OverlayTestActivity!</string>
     <string name="app_name">OverlayTest</string>
     <string name="bCopy">Copy</string>
+    <string name="bPaste">Paste</string>
+    <string name="bFull">Full Screen</string>
+    <string name="bClose">Close</string>
 
 </resources>
