@@ -1,15 +1,19 @@
 package com.mjlim.overlaytest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.ClipboardManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,14 +24,17 @@ import android.view.View.OnTouchListener;
 
 
 public class OverlayView extends LinearLayout implements OnKeyListener, OnClickListener, OnTouchListener{
-	private TextView tv;
+	
 	private EditText ed;
+	private Button bCopy;
+	
 	private boolean focused = true;
 	private WindowManager.LayoutParams winparams;
 	
 	private ScaleGestureDetector ScaleGD;
 	
 	private WindowManager wm;
+	private ClipboardManager clipboard;
 	
 	private Context context;
 	
@@ -35,6 +42,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		super(context);
 		
 		this.context = context;
+		
+		LayoutInflater inflater = LayoutInflater.from(context);
+		inflater.inflate(R.layout.overlay, this);
 		
 		this.wm = wm;
 		
@@ -45,30 +55,35 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		
 		winparams.gravity = Gravity.TOP;
 		winparams.setTitle("HELLO!");
-		winparams.height = 60;
+		//winparams.height = 60;
+		winparams.height = 120;
 		winparams.horizontalMargin = 10;
 		this.setBackgroundColor(Color.BLUE);
 		
-		tv = new TextView(context);
-		tv.setText("Text");
+//		tv = new TextView(context);
+//		tv.setText("Text");
 	
+		ed = (EditText)findViewById(R.id.ed);
+//		ed = new EditText(context);
+//		ed.setText("default");
 		
-		ed = new EditText(context);
-		ed.setText("default");
+		bCopy = (Button)findViewById(R.id.bCopy);
 		
-		ViewGroup.LayoutParams edparams = ed.getLayoutParams();
 //		edparams.width = ViewGroup.LayoutParams.MATCH_PARENT; // not working. need to move layout code to xml
 		
-		this.addView(tv);
-		this.addView(ed);
+//		this.addView(tv);
+//		this.addView(ed);
 		
 		this.setOnTouchListener(this);
 		this.setOnClickListener(this);
 		this.setOnKeyListener(this);
 		ed.setOnTouchListener(this);
 		ed.setOnKeyListener(this);
+		bCopy.setOnTouchListener(this);
 		
 		wm.addView(this, winparams);
+		
+		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE);
 		
 	}
 	
@@ -80,7 +95,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag off
     	wm.updateViewLayout(this, winparams);
     	this.postInvalidate();//redraw
-    	tv.invalidate();
+    	
 
 	}
 	
@@ -91,7 +106,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag on
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
-    	tv.invalidate();
+    	
 	}
 	public WindowManager.LayoutParams getWindowParams(){
 		return winparams;
@@ -122,7 +137,13 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		{
 			if(v == ed){ // pass through to the text field if we're touching it
 				ed.onTouchEvent(me);
+			}else if(v.getClass() == Button.class){
+				v.onTouchEvent(me);
+				if(v == bCopy){
+					clipboard.setText(ed.getText());
+				}
 			}
+				
 			this.focus();
 			
 			if(me.getPointerCount() > 1){

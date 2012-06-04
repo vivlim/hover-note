@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, OverlayTestActivity!</string>
     <string name="app_name">OverlayTest</string>
+    <string name="bCopy">Copy</string>
 
 </resources>
