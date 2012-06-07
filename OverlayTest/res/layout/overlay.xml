@@ -4,44 +4,56 @@
     android:layout_height="match_parent"
     
     android:orientation="vertical" >
-
+
     <EditText
         android:id="@+id/ed"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_weight="1"
         android:ems="10"
         android:textSize="16dip" >
 
         <requestFocus />
     </EditText>
-
+
     <LinearLayout
+        android:id="@+id/layoutButtons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" >
 
         <Button
             android:id="@+id/bCopy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bCopy" />
-
+
         <Button
             android:id="@+id/bPaste"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bPaste" />
-
-        <Button
-            android:id="@+id/bFull"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bFull" />
-
+
         <Button
             android:id="@+id/bClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bClose" />
+
+        <ImageView
+            android:id="@+id/moveHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_upload" />
+
+        <ImageView
+            android:id="@+id/resizeHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_launcher" />
 
     </LinearLayout>
 

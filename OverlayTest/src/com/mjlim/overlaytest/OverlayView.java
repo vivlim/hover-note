@@ -3,6 +3,7 @@ package com.mjlim.overlaytest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.ClipboardManager;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,9 +30,22 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	private EditText ed;
 	private Button bCopy;
-	private Button bPaste;
+	private Button bClose;
+	private LinearLayout layoutButtons;
+	private ImageView resizeHandle;
+	private ImageView moveHandle;
 	
 	private boolean focused = true;
+	private boolean resizing = false;
+	private boolean moving = false;
+	
+	private int initialPtrX = 0; // used for dragging
+	private int initialPtrY = 0;
+	private int initialX = 0;
+	private int initialY = 0;
+	private int initialW = 0;
+	private int initialH = 0;
+	
 	private WindowManager.LayoutParams winparams;
 	
 	private ScaleGestureDetector ScaleGD;
@@ -42,6 +57,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	private Drawable drActiveRect;
 	private Drawable drInactiveRect;
+	
+	final private int MIN_WIDTH = 300;
+	final private int MIN_HEIGHT = 128;
+	
 	
 	public OverlayView(Context context, WindowManager wm){
 		super(context);
@@ -58,11 +77,13 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 						WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 						WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 		
-		winparams.gravity = Gravity.TOP;
+		winparams.gravity = Gravity.LEFT | Gravity.TOP;
 		winparams.setTitle("HELLO!");
 		//winparams.height = 60;
 		winparams.height = 120;
-		winparams.horizontalMargin = 10;
+//		winparams.width= 600;
+		winparams.x=30;
+		winparams.y=30;
 		
 		drActiveRect = this.getResources().getDrawable(R.drawable.activerectangle);
 		drInactiveRect = this.getResources().getDrawable(R.drawable.inactiverectangle);
@@ -79,7 +100,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		
 		//Buttons
 		bCopy = (Button)findViewById(R.id.bCopy);
-		bPaste = (Button)findViewById(R.id.bPaste);
+		bClose = (Button)findViewById(R.id.bClose);
+		layoutButtons = (LinearLayout)findViewById(R.id.layoutButtons);
+		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
+		moveHandle = (ImageView)findViewById(R.id.moveHandle);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -88,7 +112,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		ed.setOnTouchListener(this);
 		ed.setOnKeyListener(this);
 		bCopy.setOnTouchListener(this);
-		bPaste.setOnTouchListener(this);
+		bClose.setOnTouchListener(this);
+		resizeHandle.setOnTouchListener(this);
+		moveHandle.setOnTouchListener(this);
 		
 		wm.addView(this, winparams);
 		
@@ -126,8 +152,15 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 //		tv.setText("key");
 
 //		this.unfocus();
+		if(event.getAction() == KeyEvent.ACTION_UP)
 		if(keyCode == KeyEvent.KEYCODE_BACK){
-	        context.stopService(new Intent(context, OverlayTest.class));
+//	        context.stopService(new Intent(context, OverlayTest.class));
+	        this.unfocus(); 
+		}else if(keyCode == KeyEvent.KEYCODE_MENU){
+			if(layoutButtons.getVisibility()==GONE){
+				layoutButtons.setVisibility(VISIBLE);
+			}else
+				layoutButtons.setVisibility(GONE);
 		}
         return false;
     }
@@ -144,49 +177,98 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		}
 		else
 		{
-			if(v == ed){ // pass through to the text field if we're touching it
-				ed.onTouchEvent(me);
-			}else if(v.getClass() == Button.class){
-				v.onTouchEvent(me);
-				if(v == bCopy){
-					clipboard.setText(ed.getText());
-					Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
-				}else if(v == bPaste){
-					//ed.append(clipboard.getText(), ed.get);
-					Toast.makeText(context, "Pasting is not yet implemented!", Toast.LENGTH_SHORT).show();
-				}
-			}
-				
-			this.focus();
+			this.focus(); // Focus the overlay, because we touched it.
 			
-			if(me.getPointerCount() > 1){
+			if(me.getPointerCount() > 1){ // Multitouch gesture? Okay, we'll drag it around
 		        
 				final int location[] = { 0, 0 };
 			    v.getLocationOnScreen(location);
 
-				float y1 = me.getY(0);
-				float y2 = me.getY(1);
-				
-				float absy1 = (int)(winparams.y + y1);
-				float absy2 = (int)(winparams.y + y2);
-				
-				
-				
-				//if(absy1 > absy2){int temp = absy2; absy2 = absy1; absy1 = temp;}
+				float absy1 = (int)(winparams.y + me.getY(0));
+				float absy2 = (int)(winparams.y + me.getY(1));
 				
 				winparams.y = (int)((absy1+absy2)/2);
-				
+				if((isTablet(context)) && (winparams.width != LayoutParams.MATCH_PARENT)){
+					float absx1 = (int)(winparams.x + me.getX(0));
+					float absx2 = (int)(winparams.x + me.getX(1));
+					winparams.x = (int)((absx1+absx2)/2);
+				}
 				//winparams.height = (int)(absy2-absy1); // resizing with two-finger gesture is jittery. do something else
-
-//				tv.setText(Float.toString(y1));
-				
 				wm.updateViewLayout(this, winparams);
 		    	
 			}
+			else // not doing multitouch gestures
+			{
+				if(resizing == true){
+					if(me.getAction() == MotionEvent.ACTION_UP){
+						// Motion has ended, so stop the drag.
+						resizing = false;
+						
+					}else{
+						winparams.height = Math.max(initialH + ((int)me.getRawY() - initialPtrY), MIN_HEIGHT);
+						if(isTablet(context)){
+							winparams.width =  Math.max(initialW + ((int)me.getRawX() - initialPtrX), MIN_WIDTH);
+						}
+						wm.updateViewLayout(this, winparams);
+						this.invalidate();
+					}
+				}
+				else if(moving == true){
+					if(me.getAction() == MotionEvent.ACTION_UP){
+						// Motion has ended, so stop the drag.
+						moving = false;
+
+					}else{
+						winparams.y = initialY + ((int)me.getRawY() - initialPtrY);
+						if(isTablet(context)){
+							winparams.x = initialX + ((int)me.getRawX() - initialPtrX);
+						}
+						wm.updateViewLayout(this, winparams);
+						this.invalidate();
+					}
+				}
+				if(v == ed){ // pass through to the text field if we're touching it
+					ed.onTouchEvent(me);
+				}else if(v.getClass() == Button.class){
+					v.onTouchEvent(me);
+					if(v == bCopy){
+						clipboard.setText(ed.getText());
+						Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
+					}else if((v == bPaste) && (me.getAction() == MotionEvent.ACTION_UP)){
+						//ed.append(clipboard.getText(), ed.get);
+						Toast.makeText(context, "Pasting is not yet implemented!", Toast.LENGTH_SHORT).show();
+					}else if((v == bClose) && (me.getAction() == MotionEvent.ACTION_UP)){
+				        context.stopService(new Intent(context, OverlayTest.class));
+					}
+				}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
+					if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+						initialPtrX = (int)me.getRawX();
+						initialPtrY = (int)me.getRawY();
+						initialW = this.getWidth();
+//						if(initialW < 0){initialW = 400;}
+						initialH = this.getHeight();
+						resizing = true;
+					}else if(v == moveHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+						initialPtrX = (int)me.getRawX();
+						initialPtrY = (int)me.getRawY();
+						initialX = winparams.x;
+						initialY = winparams.y;						
+
+						moving = true;
+					}
+				}
+			}	
+			
 			
 			
 			
 		}
 		return true;
+	}
+	
+	public static boolean isTablet(Context context) {
+	    return (context.getResources().getConfiguration().screenLayout
+	            & Configuration.SCREENLAYOUT_SIZE_MASK)
+	            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
 	}
 }

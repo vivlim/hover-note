@@ -17,10 +17,12 @@ public final class R {
     }
     public static final class id {
         public static final int bClose=0x7f050004;
-        public static final int bCopy=0x7f050001;
-        public static final int bFull=0x7f050003;
-        public static final int bPaste=0x7f050002;
+        public static final int bCopy=0x7f050002;
+        public static final int bPaste=0x7f050003;
         public static final int ed=0x7f050000;
+        public static final int layoutButtons=0x7f050001;
+        public static final int moveHandle=0x7f050005;
+        public static final int resizeHandle=0x7f050006;
     }
     public static final class layout {
         public static final int main=0x7f030000;
