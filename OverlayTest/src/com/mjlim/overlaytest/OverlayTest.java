@@ -10,6 +10,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +28,8 @@ public class OverlayTest extends Service {
 	EditText tView;
 //	OverlayView oView;
 	LinkedList<OverlayView> oViews; 
+	
+	OverlayView top; // topmost element
 	
 	private NotificationManager nm;
 	
@@ -82,12 +85,19 @@ public class OverlayTest extends Service {
 		notification.setLatestEventInfo(getApplicationContext(), title, text, contentIntent);
 	}
 	public void newNote(){
+		
 		if(oViews.size() == 0){
 			// this is the first note; make a persistent notification and clear any temporary ones
 			nm.cancel(NOTIFICATION_ID);
 			startForeground(NOTIFICATION_ID, notification);
+		}else{
+			for(int i=0; i< oViews.size(); i++){
+				oViews.get(i).unfocus(); // Unfocus all of the notes if opening a new one.
+			}
 		}
-		OverlayView oView = new OverlayView(this, wm);
+		Point size = new Point();
+		int screenHeight = wm.getDefaultDisplay().getHeight();
+		OverlayView oView = new OverlayView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200));
 		oViews.add(oView);
 		
 	}
@@ -104,6 +114,18 @@ public class OverlayTest extends Service {
 		
 		
 	}
+	
+	public void raiseOrUpdate(OverlayView v, WindowManager.LayoutParams winparams){
+		if(top == v){
+			// v is the top note, no need to remove and add.
+			wm.updateViewLayout(v, winparams);
+		}else{
+			wm.removeView(v);
+			wm.addView(v, winparams);
+			top = v; // note that v is the new top.
+		}
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

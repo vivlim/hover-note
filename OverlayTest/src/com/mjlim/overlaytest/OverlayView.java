@@ -35,7 +35,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private ImageView resizeHandle;
 	private TextView moveHandle;
 	
-	private boolean focused = false;
+	private boolean focused = true;
 	private boolean resizing = false;
 	private boolean moving = false;
 	
@@ -63,8 +63,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	
 	private OverlayTest hnService;
 	
-	
-	public OverlayView(Context context, WindowManager wm){
+	public OverlayView(Context context, WindowManager wm, int y){
 		super(context);
 		
 		this.context = context;
@@ -81,11 +80,13 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
 		winparams.setTitle("HELLO!");
-		//winparams.height = 60;
 		winparams.height = 150;
-//		winparams.width= 600;
-		winparams.x=30;
-		winparams.y=30;
+		if(isTablet(context)){
+			winparams.width = 400;
+			winparams.x = y;
+		}
+
+		winparams.y=y;
 		
 		winparams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 		
@@ -93,15 +94,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		drInactiveRect = this.getResources().getDrawable(R.drawable.inactiverectangle);
 		this.setBackgroundDrawable(drInactiveRect);
 		this.invalidate();
-		
-//		tv = new TextView(context);
-//		tv.setText("Text");
 	
-		ed = (EditText)findViewById(R.id.ed);
-//		ed = new EditText(context);
-//		ed.setText("default");
-		
-		
+		// Retrieve UI elements
+		ed = (EditText)findViewById(R.id.ed); // text field
+	
 		//Buttons
 		bCopy = (Button)findViewById(R.id.bCopy);
 		bClose = (Button)findViewById(R.id.bClose);
@@ -127,7 +123,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		//Bind to service
 //		context.bindService(new Intent(context, OverlayTest.class), hnService, 0);
 		
-		this.unfocus();
+		this.focus();
 		
 	}
 	
@@ -137,7 +133,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL; // set this flag on
 		winparams.flags |= WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH; // this too, gets unset when FLAG_NOT_TOUCH_MODAL is turned off.
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag off
-    	wm.updateViewLayout(this, winparams);
+		winparams.flags &= ~WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+		
+		((OverlayTest) context).raiseOrUpdate(this, winparams);
+		
     	this.postInvalidate();//redraw
     	
 
@@ -148,6 +147,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		this.setBackgroundDrawable(drInactiveRect); // visual cue
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL; // set this flag off
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag on
+		winparams.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
     	
@@ -199,7 +199,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		{
 			if(focused == false){
 				this.focus(); // Focus the overlay, because we touched it.
-//				return true;
+				return true;
 			}
 			
 			
