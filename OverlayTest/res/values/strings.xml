@@ -8,5 +8,11 @@
     <string name="bFull">Full Screen</string>
     <string name="bClose">Close</string>
     <string name="highlightColor">#33B5E5</string>
+    <string name="menuClose">Close</string>
+    <string name="menuCopy">Copy</string>
+    <string-array name="menu_items">
+        <item >Copy</item>
+        <item >Close</item>
+    </string-array>
 
 </resources>

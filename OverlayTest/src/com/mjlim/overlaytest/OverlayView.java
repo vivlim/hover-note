@@ -1,7 +1,9 @@
 package com.mjlim.overlaytest;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -34,6 +36,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private LinearLayout layoutButtons;
 	private ImageView resizeHandle;
 	private TextView moveHandle;
+	private ImageView titleIcon;
 	
 	private boolean focused = true;
 	private boolean resizing = false;
@@ -104,6 +107,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		layoutButtons = (LinearLayout)findViewById(R.id.layoutButtons);
 		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
 		moveHandle = (TextView)findViewById(R.id.moveHandle);
+		titleIcon = (ImageView)findViewById(R.id.titleIcon);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -115,6 +119,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		bClose.setOnTouchListener(this);
 		resizeHandle.setOnTouchListener(this);
 		moveHandle.setOnTouchListener(this);
+		titleIcon.setOnTouchListener(this);
 		
 		wm.addView(this, winparams);
 		
@@ -251,6 +256,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 					}else if((v == bClose) && (me.getAction() == MotionEvent.ACTION_UP)){
 				        this.close();
 					}
+				}else if(v == titleIcon){
+					int pos[] = {0,0};
+					v.getLocationOnScreen(pos);
+					showMenu(pos[0],pos[1]);
+				
 				}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
 					if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
 						initialPtrX = (int)me.getRawX();
@@ -277,6 +287,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		return true;
 	}
 	
+	public void showMenu(int x, int y){
+		new contextmenu(context, this, wm, x, y);
+		
+	}
 	public static boolean isTablet(Context context) {
 	    return (context.getResources().getConfiguration().screenLayout
 	            & Configuration.SCREENLAYOUT_SIZE_MASK)

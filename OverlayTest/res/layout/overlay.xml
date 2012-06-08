@@ -36,6 +36,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bClose" />
+
+        <ImageView
+            android:id="@+id/titleIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher" />
 
         <TextView
             android:id="@+id/moveHandle"
