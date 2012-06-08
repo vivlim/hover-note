@@ -33,9 +33,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private Button bClose;
 	private LinearLayout layoutButtons;
 	private ImageView resizeHandle;
-	private ImageView moveHandle;
+	private TextView moveHandle;
 	
-	private boolean focused = true;
+	private boolean focused = false;
 	private boolean resizing = false;
 	private boolean moving = false;
 	
@@ -58,8 +58,10 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private Drawable drActiveRect;
 	private Drawable drInactiveRect;
 	
-	final private int MIN_WIDTH = 300;
+	final private int MIN_WIDTH = 350;
 	final private int MIN_HEIGHT = 128;
+	
+	private OverlayTest hnService;
 	
 	
 	public OverlayView(Context context, WindowManager wm){
@@ -85,6 +87,8 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		winparams.x=30;
 		winparams.y=30;
 		
+		winparams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
+		
 		drActiveRect = this.getResources().getDrawable(R.drawable.activerectangle);
 		drInactiveRect = this.getResources().getDrawable(R.drawable.inactiverectangle);
 		this.setBackgroundDrawable(drInactiveRect);
@@ -103,7 +107,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		bClose = (Button)findViewById(R.id.bClose);
 		layoutButtons = (LinearLayout)findViewById(R.id.layoutButtons);
 		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
-		moveHandle = (ImageView)findViewById(R.id.moveHandle);
+		moveHandle = (TextView)findViewById(R.id.moveHandle);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -119,6 +123,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		wm.addView(this, winparams);
 		
 		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE);
+		
+		//Bind to service
+//		context.bindService(new Intent(context, OverlayTest.class), hnService, 0);
+		
+		this.unfocus();
 		
 	}
 	
@@ -142,6 +151,16 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
     	
+	}
+	
+	public void close(){
+//		this.
+//		wm.removeView(this);
+//		wm.removeView(this);
+		((OverlayTest)context).closeNote(this);
+//		context.stopService(new Intent(context, OverlayTest.class));
+		
+
 	}
 	public WindowManager.LayoutParams getWindowParams(){
 		return winparams;
@@ -174,28 +193,23 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		// TODO Auto-generated method stub
 		if((me.getActionMasked() & MotionEvent.ACTION_OUTSIDE) == MotionEvent.ACTION_OUTSIDE){
 			this.unfocus();
+//			return true;
 		}
 		else
 		{
-			this.focus(); // Focus the overlay, because we touched it.
+			if(focused == false){
+				this.focus(); // Focus the overlay, because we touched it.
+//				return true;
+			}
 			
-			if(me.getPointerCount() > 1){ // Multitouch gesture? Okay, we'll drag it around
+			
+			if((me.getAction() == MotionEvent.ACTION_POINTER_UP) && (me.getPointerCount() == 2) ){ // Tap with two fingers: show/hide buttons.
 		        
-				final int location[] = { 0, 0 };
-			    v.getLocationOnScreen(location);
-
-				float absy1 = (int)(winparams.y + me.getY(0));
-				float absy2 = (int)(winparams.y + me.getY(1));
-				
-				winparams.y = (int)((absy1+absy2)/2);
-				if((isTablet(context)) && (winparams.width != LayoutParams.MATCH_PARENT)){
-					float absx1 = (int)(winparams.x + me.getX(0));
-					float absx2 = (int)(winparams.x + me.getX(1));
-					winparams.x = (int)((absx1+absx2)/2);
+				if(layoutButtons.getVisibility()==GONE){
+					layoutButtons.setVisibility(VISIBLE);
+				}else{
+					layoutButtons.setVisibility(GONE);
 				}
-				//winparams.height = (int)(absy2-absy1); // resizing with two-finger gesture is jittery. do something else
-				wm.updateViewLayout(this, winparams);
-		    	
 			}
 			else // not doing multitouch gestures
 			{
@@ -234,11 +248,8 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 					if(v == bCopy){
 						clipboard.setText(ed.getText());
 						Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
-					}else if((v == bPaste) && (me.getAction() == MotionEvent.ACTION_UP)){
-						//ed.append(clipboard.getText(), ed.get);
-						Toast.makeText(context, "Pasting is not yet implemented!", Toast.LENGTH_SHORT).show();
 					}else if((v == bClose) && (me.getAction() == MotionEvent.ACTION_UP)){
-				        context.stopService(new Intent(context, OverlayTest.class));
+				        this.close();
 					}
 				}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
 					if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){

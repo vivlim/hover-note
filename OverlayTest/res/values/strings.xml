@@ -2,10 +2,11 @@
 <resources>
 
     <string name="hello">Hello World, OverlayTestActivity!</string>
-    <string name="app_name">OverlayTest</string>
+    <string name="app_name">HoverNote</string>
     <string name="bCopy">Copy</string>
     <string name="bPaste">Paste</string>
     <string name="bFull">Full Screen</string>
     <string name="bClose">Close</string>
+    <string name="highlightColor">#33B5E5</string>
 
 </resources>
