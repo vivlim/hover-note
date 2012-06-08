@@ -16,7 +16,7 @@ public class OverlayTestActivity extends Activity {
 
         // start service
         
-        startService(new Intent(this, OverlayTest.class));
+        startService(new Intent(this, OverlayTest.class).setAction(OverlayTest.INTENT_NEW_NOTE));
 
         setContentView(R.layout.main);
         finish();

@@ -19,6 +19,9 @@
             </intent-filter>
         </activity>
         <service android:enabled="true" android:name="OverlayTest">
+            <intent-filter android:label="New Note">
+                <action android:name="com.mjlim.OverlayTest.NEW_NOTE"/>
+            </intent-filter>
             
         </service>
     </application>

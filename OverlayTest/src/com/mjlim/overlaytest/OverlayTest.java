@@ -35,6 +35,8 @@ public class OverlayTest extends Service {
 	private Notification notification;
 	private final int NOTIFICATION_ID=3333;
 	
+	public static final String INTENT_NEW_NOTE = "com.mjlim.OverlayTest.NEW_NOTE";
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -63,7 +65,10 @@ public class OverlayTest extends Service {
 	}
 	
 	public int onStartCommand(Intent i, int flags, int startId){
-		newNote();
+		
+		if(i.getAction() == INTENT_NEW_NOTE){
+			newNote();
+		}
 		return START_STICKY;
 	}
 	
@@ -72,6 +77,7 @@ public class OverlayTest extends Service {
 	}
 	public void updateNotification(CharSequence title, CharSequence text){
 		Intent notificationIntent = new Intent(this, OverlayTestActivity.class);
+		notificationIntent.setAction(INTENT_NEW_NOTE);
 		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
 		notification.setLatestEventInfo(getApplicationContext(), title, text, contentIntent);
 	}

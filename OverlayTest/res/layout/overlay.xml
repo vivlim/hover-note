@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     
     android:orientation="vertical" >
-
+
     <EditText
         android:id="@+id/ed"
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
-        android:inputType="textCapCharacters|textMultiLine"
+        android:inputType="textMultiLine"
         android:textSize="16dip" >
 
         <requestFocus />

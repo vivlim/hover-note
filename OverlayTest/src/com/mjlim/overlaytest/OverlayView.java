@@ -82,7 +82,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
 		winparams.setTitle("HELLO!");
 		//winparams.height = 60;
-		winparams.height = 120;
+		winparams.height = 150;
 //		winparams.width= 600;
 		winparams.x=30;
 		winparams.y=30;
