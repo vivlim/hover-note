@@ -69,7 +69,7 @@ public class OverlayTest extends Service {
 	
 	public int onStartCommand(Intent i, int flags, int startId){
 		
-		if(i.getAction() == INTENT_NEW_NOTE){
+		if(i.getAction().equals(INTENT_NEW_NOTE)){
 			newNote();
 		}
 		return START_STICKY;

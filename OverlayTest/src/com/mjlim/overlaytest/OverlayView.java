@@ -24,15 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnKeyListener;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 
 
-public class OverlayView extends LinearLayout implements OnKeyListener, OnClickListener, OnTouchListener{
+public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchListener{
 	
 	private EditText ed;
-	private Button bCopy;
-	private Button bClose;
+	
 	private LinearLayout layoutButtons;
 	private ImageView resizeHandle;
 	private TextView moveHandle;
@@ -50,8 +48,6 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	private int initialH = 0;
 	
 	private WindowManager.LayoutParams winparams;
-	
-	private ScaleGestureDetector ScaleGD;
 	
 	private WindowManager wm;
 	private ClipboardManager clipboard;
@@ -102,8 +98,6 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		ed = (EditText)findViewById(R.id.ed); // text field
 	
 		//Buttons
-		bCopy = (Button)findViewById(R.id.bCopy);
-		bClose = (Button)findViewById(R.id.bClose);
 		layoutButtons = (LinearLayout)findViewById(R.id.layoutButtons);
 		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
 		moveHandle = (TextView)findViewById(R.id.moveHandle);
@@ -111,15 +105,13 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
-		this.setOnClickListener(this);
 		this.setOnKeyListener(this);
 		ed.setOnTouchListener(this);
 		ed.setOnKeyListener(this);
-		bCopy.setOnTouchListener(this);
-		bClose.setOnTouchListener(this);
 		resizeHandle.setOnTouchListener(this);
 		moveHandle.setOnTouchListener(this);
 		titleIcon.setOnTouchListener(this);
+		titleIcon.setOnKeyListener(this);
 		
 		wm.addView(this, winparams);
 		
@@ -174,25 +166,17 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
     {
 //		tv.setText("key");
-
 //		this.unfocus();
 		if(event.getAction() == KeyEvent.ACTION_UP)
 		if(keyCode == KeyEvent.KEYCODE_BACK){
 //	        context.stopService(new Intent(context, OverlayTest.class));
 	        this.unfocus(); 
 		}else if(keyCode == KeyEvent.KEYCODE_MENU){
-			if(layoutButtons.getVisibility()==GONE){
-				layoutButtons.setVisibility(VISIBLE);
-			}else
-				layoutButtons.setVisibility(GONE);
+			showMenu();
 		}
         return false;
     }
 
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		this.focus();
-	}
 
 	public boolean onTouch(View v, MotionEvent me) {
 		// TODO Auto-generated method stub
@@ -250,13 +234,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 					ed.onTouchEvent(me);
 				}else if(v.getClass() == Button.class){
 					v.onTouchEvent(me);
-					if(v == bCopy){
-						clipboard.setText(ed.getText());
-						Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
-					}else if((v == bClose) && (me.getAction() == MotionEvent.ACTION_UP)){
-				        this.close();
-					}
-				}else if(v == titleIcon){
+				}else if((v == titleIcon) && (me.getAction() == MotionEvent.ACTION_UP)){
 					int pos[] = {0,0};
 					v.getLocationOnScreen(pos);
 					showMenu(pos[0],pos[1]);
@@ -287,13 +265,35 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnClickL
 		return true;
 	}
 	
+	public void showMenu(){
+		int pos[] = {0,0};
+		titleIcon.getLocationOnScreen(pos);
+		showMenu(pos[0],pos[1]);
+	}
+	
 	public void showMenu(int x, int y){
-		new contextmenu(context, this, wm, x, y);
+		
+		unfocus();
+		winparams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // required to block taps that close the context menu from activating apps below this one
+    	wm.updateViewLayout(this, winparams);
+		new contextmenu(context, this, wm, x, y+8);
 		
 	}
 	public static boolean isTablet(Context context) {
 	    return (context.getResources().getConfiguration().screenLayout
 	            & Configuration.SCREENLAYOUT_SIZE_MASK)
 	            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+	}
+	
+	public void toggleButtons(){
+		if(layoutButtons.getVisibility()==GONE){
+			layoutButtons.setVisibility(VISIBLE);
+		}else
+			layoutButtons.setVisibility(GONE);
+	}
+	
+	public void copy(){
+		clipboard.setText(ed.getText());
+		Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
 	}
 }

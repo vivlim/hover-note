@@ -24,41 +24,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
-
-        <Button
-            android:id="@+id/bCopy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bCopy" />
-
-        <Button
-            android:id="@+id/bClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bClose" />
-
+
         <ImageView
             android:id="@+id/titleIcon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher" />
-
+            android:layout_height="match_parent"
+            android:paddingBottom="1px"
+            android:src="@drawable/menu" />
+
         <TextView
             android:id="@+id/moveHandle"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/app_name"
             android:textColor="#33B5E5"
             android:textSize="18dp" />
-
+
         <ImageView
             android:id="@+id/resizeHandle"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:paddingBottom="1px"
+            android:padding="1px"
+            android:paddingBottom="4px"
             android:src="@drawable/resizehandle" />
 
     </LinearLayout>
