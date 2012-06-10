@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mjlim.overlaytest"
+<manifest package="com.mjlim.overlaytest"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="10"
         android:targetSdkVersion="15" />
@@ -21,6 +20,9 @@
         <service android:enabled="true" android:name="OverlayTest">
             <intent-filter android:label="New Note">
                 <action android:name="com.mjlim.OverlayTest.NEW_NOTE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.mjlim.OverlayTest.REMAKE_NOTE"/>
             </intent-filter>
             
         </service>

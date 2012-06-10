@@ -25,16 +25,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 
 
-public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchListener{
+public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
 	
 	private EditText ed;
 	
 	private LinearLayout layoutButtons;
 	private ImageView resizeHandle;
-	private TextView moveHandle;
-	private ImageView titleIcon;
+	private LinearLayout moveHandle;
+	private ImageView menuButton;
 	
 	private boolean focused = true;
 	private boolean resizing = false;
@@ -60,7 +61,6 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 	final private int MIN_WIDTH = 350;
 	final private int MIN_HEIGHT = 128;
 	
-	private OverlayTest hnService;
 	
 	public OverlayView(Context context, WindowManager wm, int y){
 		super(context);
@@ -78,7 +78,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 						WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 		
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
-		winparams.setTitle("HELLO!");
+		winparams.setTitle("HoverNote");
 		winparams.height = 150;
 		if(isTablet(context)){
 			winparams.width = 400;
@@ -100,8 +100,8 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		//Buttons
 		layoutButtons = (LinearLayout)findViewById(R.id.layoutButtons);
 		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
-		moveHandle = (TextView)findViewById(R.id.moveHandle);
-		titleIcon = (ImageView)findViewById(R.id.titleIcon);
+		moveHandle = (LinearLayout)findViewById(R.id.moveHandle);
+		menuButton = (ImageView)findViewById(R.id.menuButton);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -110,8 +110,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		ed.setOnKeyListener(this);
 		resizeHandle.setOnTouchListener(this);
 		moveHandle.setOnTouchListener(this);
-		titleIcon.setOnTouchListener(this);
-		titleIcon.setOnKeyListener(this);
+//		menuButton.setOnTouchListener(this);
+		menuButton.setOnClickListener(this);
+		menuButton.setOnKeyListener(this);
 		
 		wm.addView(this, winparams);
 		
@@ -234,11 +235,6 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 					ed.onTouchEvent(me);
 				}else if(v.getClass() == Button.class){
 					v.onTouchEvent(me);
-				}else if((v == titleIcon) && (me.getAction() == MotionEvent.ACTION_UP)){
-					int pos[] = {0,0};
-					v.getLocationOnScreen(pos);
-					showMenu(pos[0],pos[1]);
-				
 				}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
 					if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
 						initialPtrX = (int)me.getRawX();
@@ -265,9 +261,17 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		return true;
 	}
 	
+	public void onClick(View v) {
+		if((v == menuButton)){
+			int pos[] = {0,0};
+			v.getLocationOnScreen(pos);
+			showMenu(pos[0],pos[1]);
+		}
+	}
+	
 	public void showMenu(){
 		int pos[] = {0,0};
-		titleIcon.getLocationOnScreen(pos);
+		menuButton.getLocationOnScreen(pos);
 		showMenu(pos[0],pos[1]);
 	}
 	
@@ -296,4 +300,29 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		clipboard.setText(ed.getText());
 		Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
 	}
+	
+	public String getText(){
+		return ed.getText().toString();
+	}
+	
+	public void setText(String s){
+		ed.setText(s);
+	}
+	public void createNotif(){
+		((OverlayTest)context).createNotifForNote(this);
+	}
+	public void moveTo(int x, int y){
+		if(isTablet(context)){
+			winparams.x = x;
+		}
+		winparams.y = y;
+		wm.updateViewLayout(this, winparams);
+	}
+	public void resizeTo(int width, int height){
+		winparams.width =  width;
+		winparams.height =  height;
+		wm.updateViewLayout(this, winparams);
+		
+	}
+
 }

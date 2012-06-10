@@ -21,14 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchListener {
+public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
 
 	private WindowManager wm;
 	private WindowManager.LayoutParams winparams;
 	private ClipboardManager clipboard;
 
 	OverlayView ov;
-	Button bCopy, bClose;
+	ImageView bPaste, bCopy, bClose, bMini;
 	
 	public contextmenu(Context context, OverlayView ov, WindowManager wm, int x, int y) {
 		super(context);
@@ -59,7 +59,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
 		winparams.setTitle("Context Menu");
 		winparams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		winparams.width = 250;
+		winparams.width = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		winparams.x=x;
 		winparams.y=y;
@@ -71,8 +71,9 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		this.setFocusable(true);
 		this.setFocusableInTouchMode(true);
 
-		bCopy = (Button)findViewById(R.id.bCopy);
-		bClose = (Button)findViewById(R.id.bClose);
+		bCopy = (ImageView)findViewById(R.id.bCopy);
+		bClose = (ImageView)findViewById(R.id.bClose);
+		bMini = (ImageView)findViewById(R.id.bMini);
 //		((EditText)findViewById(R.id.editText1)).setOnKeyListener(this);
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -81,8 +82,9 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 //		bCopy.setOnKeyListener(this);
 //		bClose.setOnKeyListener(this);
 //		
-		bCopy.setOnTouchListener(this);
-		bClose.setOnTouchListener(this);
+		bCopy.setOnClickListener(this);
+		bClose.setOnClickListener(this);
+		bMini.setOnClickListener(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams);
@@ -100,20 +102,23 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 			return true;
 		}
 		
-		if((v==bClose) && (me.getAction() == MotionEvent.ACTION_UP)){
+		return false;
+	}
+	
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if(v==bMini){
 			this.dismiss();
+			ov.createNotif();
 			ov.close();
-			
-			return true;
-		}
-		if((v==bCopy) && (me.getAction() == MotionEvent.ACTION_UP)){
+		}else if(v==bCopy){
 			this.dismiss();
 			ov.copy();
-			
-			return true;
+		}else if(v==bClose){
+			this.dismiss();
+			ov.close();
 		}
-
-		return false;
+		
 	}
 
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -139,5 +144,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		ov.focus();
 		
 	}
+
+
 
 }

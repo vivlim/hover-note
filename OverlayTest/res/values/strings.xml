@@ -14,5 +14,6 @@
         <item >Copy</item>
         <item >Close</item>
     </string-array>
+        <string name="app_name_lowercase">hovernote</string>
 
 </resources>

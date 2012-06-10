@@ -15,9 +15,11 @@ public class OverlayTestActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // start service
-        
-        startService(new Intent(this, OverlayTest.class).setAction(OverlayTest.INTENT_NEW_NOTE));
-
+        Intent i = new Intent(this, OverlayTest.class);
+        i.setAction(OverlayTest.INTENT_NEW_NOTE);
+//        i.putExtra(OverlayTest.REMAKE_TEXT_KEY, "bluh");
+        startService(i);
+  
         setContentView(R.layout.main);
         finish();
     }

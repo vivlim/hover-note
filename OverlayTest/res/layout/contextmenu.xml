@@ -1,22 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="horizontal" >
-
-    <Button
-        android:id="@+id/bClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bClose" />
-
-    <Button
+
+    <com.mjlim.overlaytest.MLImageButton
         android:id="@+id/bCopy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bCopy" />
+        android:src="@drawable/copy_white48" />
+
+    <com.mjlim.overlaytest.MLImageButton
+        android:id="@+id/bPaste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/paste_white48" />
+
+    <com.mjlim.overlaytest.MLImageButton
+        android:id="@+id/bMini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/minimize_white48" />
+
+    <com.mjlim.overlaytest.MLImageButton
+        android:id="@+id/bClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close_white48" />
 
 </LinearLayout>
