@@ -147,6 +147,7 @@ public class OverlayTest extends Service {
 			// v is the top note, no need to remove and add.
 			wm.updateViewLayout(v, winparams);
 		}else{
+			v.setWindowAnimation(android.R.style.Animation_Toast); // necessary, otherwise windows restored from being minimized will slide around a lot (distractingly)
 			wm.removeView(v);
 			wm.addView(v, winparams);
 			top = v; // note that v is the new top.

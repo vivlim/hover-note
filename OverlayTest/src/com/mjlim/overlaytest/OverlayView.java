@@ -255,7 +255,8 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 						initialPtrX = (int)me.getRawX();
 						initialPtrY = (int)me.getRawY();
 						initialX = winparams.x;
-						initialY = winparams.y;						
+						initialY = winparams.y;		
+
 
 						moving = true;
 					}
