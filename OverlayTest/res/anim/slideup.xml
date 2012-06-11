@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+   <!-- <translate xmlns:android="schemas.android.com/apk/res/android" android:fromXDelta="-200" android:fromYDelta="-200"
+          android:duration="700" />-->
+<translate
+ android="http://schemas.android.com/apk/res/android"
+ interpolator="@android:anim/bounce_interpolator"
+ duration="300"
+ fromxdelta="100%p"
+ toxdelta="0%">
+</translate>

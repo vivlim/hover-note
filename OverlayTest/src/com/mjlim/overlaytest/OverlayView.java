@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.text.ClipboardManager;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,6 +28,10 @@ import android.widget.Toast;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
 
 
 public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
@@ -61,8 +67,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 	final private int MIN_WIDTH = 350;
 	final private int MIN_HEIGHT = 128;
 	
-	
 	public OverlayView(Context context, WindowManager wm, int y){
+		this(context, wm, y, android.R.style.Animation_Dialog);
+	}
+	
+	public OverlayView(Context context, WindowManager wm, int y, int transition ){
 		super(context);
 		
 		this.context = context;
@@ -114,6 +123,9 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		menuButton.setOnClickListener(this);
 		menuButton.setOnKeyListener(this);
 		
+		winparams.windowAnimations = transition;
+		
+		
 		wm.addView(this, winparams);
 		
 		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE);
@@ -152,11 +164,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 	}
 	
 	public void close(){
-//		this.
-//		wm.removeView(this);
-//		wm.removeView(this);
 		((OverlayTest)context).closeNote(this);
-//		context.stopService(new Intent(context, OverlayTest.class));
 		
 
 	}
@@ -322,7 +330,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		winparams.width =  width;
 		winparams.height =  height;
 		wm.updateViewLayout(this, winparams);
-		
+	}
+	
+	public void setWindowAnimation(int r){
+		winparams.windowAnimations = r;
+		wm.updateViewLayout(this, winparams);
 	}
 
 }

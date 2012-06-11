@@ -23,6 +23,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.KeyEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 
 public class OverlayTest extends Service {
@@ -81,7 +83,7 @@ public class OverlayTest extends Service {
 		if(i.getAction().equals(INTENT_NEW_NOTE)){
 			newNote();
 		}else if(i.getAction().equals(INTENT_REMAKE_NOTE)){
-			OverlayView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY));
+			OverlayView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY), android.R.style.Animation_Translucent);
 			int x = i.getIntExtra(REMAKE_X_KEY, 0);
 			int y = i.getIntExtra(REMAKE_Y_KEY, 0);
 			int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
@@ -105,9 +107,9 @@ public class OverlayTest extends Service {
 		notification.setLatestEventInfo(getApplicationContext(), title, text, contentIntent);
 	}
 	public void newNote(){
-		newNote("");
+		newNote("", android.R.style.Animation_Dialog);
 	}
-	public OverlayView newNote(String s){
+	public OverlayView newNote(String s, int animation){
 		
 		if(oViews.size() == 0){
 			// this is the first note; make a persistent notification and clear any temporary ones
@@ -120,7 +122,7 @@ public class OverlayTest extends Service {
 		}
 		Point size = new Point();
 		int screenHeight = wm.getDefaultDisplay().getHeight();
-		OverlayView oView = new OverlayView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200));
+		OverlayView oView = new OverlayView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
 		oViews.add(oView);
 		return oView;
@@ -128,7 +130,6 @@ public class OverlayTest extends Service {
 	}
 	
 	public void closeNote(OverlayView v){
-//		createNotifForNote(v); // remove
 		oViews.remove(v);
 		wm.removeView(v);
 		

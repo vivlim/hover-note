@@ -64,6 +64,8 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		winparams.x=x;
 		winparams.y=y;
 		
+		winparams.windowAnimations = android.R.style.Animation_Toast;
+		
 		winparams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 	
 		// Retrieve UI elements
@@ -109,6 +111,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		// TODO Auto-generated method stub
 		if(v==bMini){
 			this.dismiss();
+			ov.setWindowAnimation(android.R.style.Animation_Translucent);
 			ov.createNotif();
 			ov.close();
 		}else if(v==bCopy){
@@ -116,6 +119,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 			ov.copy();
 		}else if(v==bClose){
 			this.dismiss();
+			ov.setWindowAnimation(android.R.style.Animation_Dialog);
 			ov.close();
 		}
 		
