@@ -1,5 +1,6 @@
 package com.mjlim.overlaytest;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -137,6 +138,7 @@ public class OverlayTest extends Service {
 			// this is the last note; clear the persistent notification and create a temporary one
 			stopForeground(true);
 			nm.notify(NOTIFICATION_ID, notification);
+			this.stopSelf();
 		}
 		
 		
@@ -155,25 +157,32 @@ public class OverlayTest extends Service {
 	}
 	
 	
-	@Override
+/*	@Override
 	public void onDestroy() {
-		for(int i=0; i< oViews.size(); i++){
-			createNotifForNote(oViews.get(i));
-			oViews.get(i).close();
+		int offset=0;
+		for(int i = 0; i < oViews.size(); i++){
+			
+			OverlayView v = oViews.get(i);
+			createNotifForNote(v,offset);
+			closeNote(v);
+			offset++;
 		}
-		
-		super.onDestroy();
+//		super.onDestroy(); // not required
 
-		this.stopSelf();
+		
 	}
+	*/
 	
 	public void createNotifForNote(OverlayView v){
+		createNotifForNote(v,0);
+	}
+	public void createNotifForNote(OverlayView v, int offset){
 		int icon = R.drawable.notificon_24;
-		CharSequence notifText = "hovernote";
-		Notification n = new Notification(icon, notifText,System.currentTimeMillis());
+		CharSequence notifText = "hovernote stored note";
+		Notification n = new Notification(icon, notifText,System.currentTimeMillis() - offset);
 		n.flags = Notification.FLAG_AUTO_CANCEL; // make notif remove itself when clicked
 		
-		String title = "hovernote Stored Note";
+		String title = "hovernote stored note";
 		String text = v.getText();
 		
 		
