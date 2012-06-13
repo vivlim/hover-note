@@ -152,9 +152,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		winparams.flags = 0;
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL; // set this flag on
 		winparams.flags |= WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH; // this too, gets unset when FLAG_NOT_TOUCH_MODAL is turned off.
-//		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag off
-//		winparams.flags &= ~WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 		ed.setFocusableInTouchMode(true);
+
 		((HoverNoteService) context).raiseOrUpdate(this, winparams);
 		
     	this.postInvalidate();//redraw

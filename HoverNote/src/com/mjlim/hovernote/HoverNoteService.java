@@ -59,9 +59,7 @@ public class HoverNoteService extends Service {
 	public static final String REMAKE_Y_KEY = "com.mjlim.hovernote.y"; // y position of a remade note
 	public static final String REMAKE_WIDTH_KEY = "com.mjlim.hovernote.width"; // width of a remade note
 	public static final String REMAKE_HEIGHT_KEY = "com.mjlim.hovernote.height"; // height of a remade note
-	
-	private int notifCount = 0; // used for unique ids 
-	
+		
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -192,8 +190,8 @@ public class HoverNoteService extends Service {
 		PendingIntent cIntent = PendingIntent.getService(this, 0, nIntent, PendingIntent.FLAG_UPDATE_CURRENT); // PendingIntent.FLAG_ONE_SHOT
 
 		n.setLatestEventInfo(getApplicationContext(), title, text, cIntent);
-		nm.notify(notifCount, n);
-		notifCount++;
+		nm.notify((int)(System.currentTimeMillis()), n); // use current time as the unique id for the notification. casting long to int may lose some information, but for our purposes that is alright. 
+		
 	}
 
 	
