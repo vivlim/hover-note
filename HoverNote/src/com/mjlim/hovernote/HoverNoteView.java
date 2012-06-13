@@ -317,9 +317,13 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	public void paste(){
 		CharSequence in = clipboard.getText();
-		int start = ed.getSelectionStart();
-		int end = ed.getSelectionEnd();
-		ed.setText(ed.getText().replace(Math.min(start, end), Math.max(start,end), in, 0, in.length()));
+		if(ed.getText() != null){
+			int start = ed.getSelectionStart();
+			int end = ed.getSelectionEnd();
+			ed.setText(ed.getText().replace(Math.min(start, end), Math.max(start,end), in, 0, in.length()));
+		}else{
+			ed.setText(in);
+		}
 		Toast.makeText(context, "Pasted", Toast.LENGTH_SHORT).show();
 	}
 	
