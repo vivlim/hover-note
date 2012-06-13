@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

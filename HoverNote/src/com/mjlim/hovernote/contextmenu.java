@@ -1,4 +1,6 @@
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
+
+import com.mjlim.hovernote.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,10 +29,10 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	private WindowManager.LayoutParams winparams;
 	private ClipboardManager clipboard;
 
-	OverlayView ov;
+	HoverNoteView ov;
 	ImageView bPaste, bCopy, bClose, bMini;
 	
-	public contextmenu(Context context, OverlayView ov, WindowManager wm, int x, int y) {
+	public contextmenu(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		

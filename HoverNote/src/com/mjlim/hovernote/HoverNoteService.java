@@ -1,8 +1,10 @@
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.mjlim.hovernote.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -28,13 +30,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 
-public class OverlayTest extends Service {
+public class HoverNoteService extends Service {
 	
 	EditText tView;
 //	OverlayView oView;
-	LinkedList<OverlayView> oViews; 
+	LinkedList<HoverNoteView> oViews; 
 	
-	OverlayView top; // topmost element
+	HoverNoteView top; // topmost element
 	
 	private NotificationManager nm;
 	
@@ -43,8 +45,8 @@ public class OverlayTest extends Service {
 	private Notification notification;
 	private final int NOTIFICATION_ID=3333;
 	
-	public static final String INTENT_NEW_NOTE = "com.mjlim.OverlayTest.NEW_NOTE";
-	public static final String INTENT_REMAKE_NOTE = "com.mjlim.OverlayTest.REMAKE_NOTE";
+	public static final String INTENT_NEW_NOTE = "com.mjlim.hovernote.NEW_NOTE";
+	public static final String INTENT_REMAKE_NOTE = "com.mjlim.hovernote.REMAKE_NOTE";
 	public static final String REMAKE_TEXT_KEY = "com.mjlim.hovernote.text";
 	public static final String REMAKE_X_KEY = "com.mjlim.hovernote.x";
 	public static final String REMAKE_Y_KEY = "com.mjlim.hovernote.y";
@@ -68,7 +70,7 @@ public class OverlayTest extends Service {
 		wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		
-		oViews = new LinkedList<OverlayView>();
+		oViews = new LinkedList<HoverNoteView>();
 		
 
 		int icon = R.drawable.notificon_24;
@@ -84,7 +86,7 @@ public class OverlayTest extends Service {
 		if(i.getAction().equals(INTENT_NEW_NOTE)){
 			newNote();
 		}else if(i.getAction().equals(INTENT_REMAKE_NOTE)){
-			OverlayView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY), android.R.style.Animation_Translucent);
+			HoverNoteView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY), android.R.style.Animation_Translucent);
 			int x = i.getIntExtra(REMAKE_X_KEY, 0);
 			int y = i.getIntExtra(REMAKE_Y_KEY, 0);
 			int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
@@ -102,7 +104,7 @@ public class OverlayTest extends Service {
 		updateNotification("hovernote", "Select to open a note");
 	}
 	public void updateNotification(CharSequence title, CharSequence text){
-		Intent notificationIntent = new Intent(this, OverlayTestActivity.class);
+		Intent notificationIntent = new Intent(this, HoverNoteActivity.class);
 		notificationIntent.setAction(INTENT_NEW_NOTE);
 		PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
 		notification.setLatestEventInfo(getApplicationContext(), title, text, contentIntent);
@@ -110,7 +112,7 @@ public class OverlayTest extends Service {
 	public void newNote(){
 		newNote("", android.R.style.Animation_Dialog);
 	}
-	public OverlayView newNote(String s, int animation){
+	public HoverNoteView newNote(String s, int animation){
 		
 		if(oViews.size() == 0){
 			// this is the first note; make a persistent notification and clear any temporary ones
@@ -123,14 +125,14 @@ public class OverlayTest extends Service {
 		}
 		Point size = new Point();
 		int screenHeight = wm.getDefaultDisplay().getHeight();
-		OverlayView oView = new OverlayView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
+		HoverNoteView oView = new HoverNoteView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
 		oViews.add(oView);
 		return oView;
 		
 	}
 	
-	public void closeNote(OverlayView v){
+	public void closeNote(HoverNoteView v){
 		oViews.remove(v);
 		wm.removeView(v);
 		
@@ -144,7 +146,7 @@ public class OverlayTest extends Service {
 		
 	}
 	
-	public void raiseOrUpdate(OverlayView v, WindowManager.LayoutParams winparams){
+	public void raiseOrUpdate(HoverNoteView v, WindowManager.LayoutParams winparams){
 		if(top == v){
 			// v is the top note, no need to remove and add.
 			wm.updateViewLayout(v, winparams);
@@ -173,10 +175,10 @@ public class OverlayTest extends Service {
 	}
 	*/
 	
-	public void createNotifForNote(OverlayView v){
+	public void createNotifForNote(HoverNoteView v){
 		createNotifForNote(v,0);
 	}
-	public void createNotifForNote(OverlayView v, int offset){
+	public void createNotifForNote(HoverNoteView v, int offset){
 		int icon = R.drawable.notificon_24;
 		CharSequence notifText = "hovernote stored note";
 		Notification n = new Notification(icon, notifText,System.currentTimeMillis() - offset);
@@ -186,7 +188,7 @@ public class OverlayTest extends Service {
 		String text = v.getText();
 		
 		
-		Intent nIntent = new Intent(this.getApplicationContext(), OverlayTest.class);
+		Intent nIntent = new Intent(this.getApplicationContext(), HoverNoteService.class);
 		nIntent.putExtra(REMAKE_TEXT_KEY, text);
 		WindowManager.LayoutParams wp = v.getWindowParams(); 
 		nIntent.putExtra(REMAKE_X_KEY, wp.x);

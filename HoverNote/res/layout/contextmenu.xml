@@ -8,25 +8,25 @@
     android:layoutAnimation="@anim/slideuplayout"
     android:orientation="horizontal" >
 
-    <com.mjlim.overlaytest.MLImageButton
+    <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bCopy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/copy_white48" />
 
-    <com.mjlim.overlaytest.MLImageButton
+    <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bPaste"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/paste_white48" />
 
-    <com.mjlim.overlaytest.MLImageButton
+    <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bMini"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/minimize_white48" />
 
-    <com.mjlim.overlaytest.MLImageButton
+    <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

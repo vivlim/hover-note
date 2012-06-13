@@ -1,4 +1,6 @@
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
+
+import com.mjlim.hovernote.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,7 +36,7 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 
 
-public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
+public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
 	
 	private EditText ed;
 	
@@ -67,11 +69,11 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 	final private int MIN_WIDTH = 350;
 	final private int MIN_HEIGHT = 128;
 	
-	public OverlayView(Context context, WindowManager wm, int y){
+	public HoverNoteView(Context context, WindowManager wm, int y){
 		this(context, wm, y, android.R.style.Animation_Dialog);
 	}
 	
-	public OverlayView(Context context, WindowManager wm, int y, int transition ){
+	public HoverNoteView(Context context, WindowManager wm, int y, int transition ){
 		super(context);
 		
 		this.context = context;
@@ -145,7 +147,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag off
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 		
-		((OverlayTest) context).raiseOrUpdate(this, winparams);
+		((HoverNoteService) context).raiseOrUpdate(this, winparams);
 		
     	this.postInvalidate();//redraw
     	
@@ -164,7 +166,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 	}
 	
 	public void close(){
-		((OverlayTest)context).closeNote(this);
+		((HoverNoteService)context).closeNote(this);
 		
 
 	}
@@ -318,7 +320,7 @@ public class OverlayView extends LinearLayout implements OnKeyListener, OnTouchL
 		ed.setText(s);
 	}
 	public void createNotif(){
-		((OverlayTest)context).createNotifForNote(this);
+		((HoverNoteService)context).createNotifForNote(this);
 	}
 	public void moveTo(int x, int y){
 		if(isTablet(context)){

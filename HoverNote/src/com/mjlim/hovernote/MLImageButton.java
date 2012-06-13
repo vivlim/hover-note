@@ -1,4 +1,6 @@
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
+import com.mjlim.hovernote.R;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;

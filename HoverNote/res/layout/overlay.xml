@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
-        <com.mjlim.overlaytest.MLImageButton
+        <com.mjlim.hovernote.MLImageButton
             android:id="@+id/menuButton"
             android:layout_width="42dp"
             android:layout_height="match_parent"

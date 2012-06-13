@@ -1,4 +1,6 @@
-package com.mjlim.overlaytest;
+package com.mjlim.hovernote;
+
+import com.mjlim.hovernote.R;
 
 import android.app.Activity;
 import android.app.Service;
@@ -8,15 +10,15 @@ import android.os.IBinder;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-public class OverlayTestActivity extends Activity {
+public class HoverNoteActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // start service
-        Intent i = new Intent(this, OverlayTest.class);
-        i.setAction(OverlayTest.INTENT_NEW_NOTE);
+        Intent i = new Intent(this, HoverNoteService.class);
+        i.setAction(HoverNoteService.INTENT_NEW_NOTE);
 //        i.putExtra(OverlayTest.REMAKE_TEXT_KEY, "bluh");
         startService(i);
   
