@@ -19,9 +19,7 @@
 
 package com.mjlim.hovernote;
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import com.mjlim.hovernote.R;
 
@@ -29,30 +27,17 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.view.KeyEvent;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 
 public class HoverNoteService extends Service {
 	
 	EditText tView;
-//	OverlayView oView;
 	LinkedList<HoverNoteView> oViews; 
 	
 	HoverNoteView top; // topmost element
@@ -64,22 +49,23 @@ public class HoverNoteService extends Service {
 	private Notification notification;
 	private final int NOTIFICATION_ID=3333;
 	
+	// Define the intents
 	public static final String INTENT_NEW_NOTE = "com.mjlim.hovernote.NEW_NOTE";
 	public static final String INTENT_REMAKE_NOTE = "com.mjlim.hovernote.REMAKE_NOTE";
-	public static final String REMAKE_TEXT_KEY = "com.mjlim.hovernote.text";
-	public static final String REMAKE_X_KEY = "com.mjlim.hovernote.x";
-	public static final String REMAKE_Y_KEY = "com.mjlim.hovernote.y";
-	public static final String REMAKE_WIDTH_KEY = "com.mjlim.hovernote.width";
-	public static final String REMAKE_HEIGHT_KEY = "com.mjlim.hovernote.height";
 	
+	// define the intent extra keys we will be using.
+	public static final String REMAKE_TEXT_KEY = "com.mjlim.hovernote.text"; // text to expand into a remade note
+	public static final String REMAKE_X_KEY = "com.mjlim.hovernote.x"; // x position of a remade note
+	public static final String REMAKE_Y_KEY = "com.mjlim.hovernote.y"; // y position of a remade note
+	public static final String REMAKE_WIDTH_KEY = "com.mjlim.hovernote.width"; // width of a remade note
+	public static final String REMAKE_HEIGHT_KEY = "com.mjlim.hovernote.height"; // height of a remade note
 	
-	
-	private int notifCount = 0;
+	private int notifCount = 0; // used for unique ids 
 	
 	@Override
-	public IBinder onBind(Intent intent) {
+	public IBinder onBind(Intent arg0) {
+		// TODO Auto-generated method stub
 		return null;
-		
 	}
 	
 	@Override
@@ -120,7 +106,7 @@ public class HoverNoteService extends Service {
 	}
 	
 	public void updateNotification(){
-		updateNotification("hovernote", "Select to open a note");
+		updateNotification("hovernote", "Select to open a blank note");
 	}
 	public void updateNotification(CharSequence title, CharSequence text){
 		Intent notificationIntent = new Intent(this, HoverNoteActivity.class);
@@ -132,6 +118,7 @@ public class HoverNoteService extends Service {
 		newNote("", android.R.style.Animation_Dialog);
 	}
 	public HoverNoteView newNote(String s, int animation){
+		// opens a new note window with specified animation
 		
 		if(oViews.size() == 0){
 			// this is the first note; make a persistent notification and clear any temporary ones
@@ -142,7 +129,6 @@ public class HoverNoteService extends Service {
 				oViews.get(i).unfocus(); // Unfocus all of the notes if opening a new one.
 			}
 		}
-		Point size = new Point();
 		int screenHeight = wm.getDefaultDisplay().getHeight();
 		HoverNoteView oView = new HoverNoteView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
@@ -152,6 +138,7 @@ public class HoverNoteService extends Service {
 	}
 	
 	public void closeNote(HoverNoteView v){
+		// closes a note window.
 		oViews.remove(v);
 		wm.removeView(v);
 		
@@ -166,6 +153,7 @@ public class HoverNoteService extends Service {
 	}
 	
 	public void raiseOrUpdate(HoverNoteView v, WindowManager.LayoutParams winparams){
+		// updates view layout, or raises note to the top of the stack.
 		if(top == v){
 			// v is the top note, no need to remove and add.
 			wm.updateViewLayout(v, winparams);
@@ -176,23 +164,6 @@ public class HoverNoteService extends Service {
 			top = v; // note that v is the new top.
 		}
 	}
-	
-	
-/*	@Override
-	public void onDestroy() {
-		int offset=0;
-		for(int i = 0; i < oViews.size(); i++){
-			
-			OverlayView v = oViews.get(i);
-			createNotifForNote(v,offset);
-			closeNote(v);
-			offset++;
-		}
-//		super.onDestroy(); // not required
-
-		
-	}
-	*/
 	
 	public void createNotifForNote(HoverNoteView v){
 		createNotifForNote(v,0);
@@ -224,8 +195,6 @@ public class HoverNoteService extends Service {
 		nm.notify(notifCount, n);
 		notifCount++;
 	}
-	
-	
-	
+
 	
 }

@@ -21,7 +21,6 @@ package com.mjlim.hovernote;
 
 import com.mjlim.hovernote.R;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -33,13 +32,8 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
 public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
 
@@ -76,7 +70,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		winparams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
-		winparams.setTitle("Context Menu");
+		winparams.setTitle("hovernote Context Menu");
 		winparams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 		winparams.width = WindowManager.LayoutParams.WRAP_CONTENT;
 
@@ -87,37 +81,34 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		
 		winparams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 	
-		// Retrieve UI elements
-		//Buttons
+
 		this.setFocusable(true);
 		this.setFocusableInTouchMode(true);
 
+		// Retrieve UI elements
 		bCopy = (ImageView)findViewById(R.id.bCopy);
 		bClose = (ImageView)findViewById(R.id.bClose);
 		bMini = (ImageView)findViewById(R.id.bMini);
 		bPaste = (ImageView)findViewById(R.id.bPaste);
-//		((EditText)findViewById(R.id.editText1)).setOnKeyListener(this);
 		// Assign listeners
 		this.setOnTouchListener(this);
 		this.setOnKeyListener(this);
 		
-//		bCopy.setOnKeyListener(this);
-//		bClose.setOnKeyListener(this);
-//		
+		// Set onclick for all of the buttons
 		bCopy.setOnClickListener(this);
 		bClose.setOnClickListener(this);
 		bMini.setOnClickListener(this);
 		bPaste.setOnClickListener(this);
 		
 		this.invalidate();
-		wm.addView(this, winparams);
+		wm.addView(this, winparams); // make it visible
 
 		this.requestFocus();		
 	}
 
 	public boolean onTouch(View v, MotionEvent me) {
-		// TODO Auto-generated method stub
 		if((me.getActionMasked() & (MotionEvent.ACTION_OUTSIDE | MotionEvent.ACTION_DOWN)) == (MotionEvent.ACTION_OUTSIDE | MotionEvent.ACTION_DOWN)){
+			// if you have clicked outside of the window, dismiss this context menu.
 			this.dismiss();
 			return true;
 		}
@@ -126,7 +117,6 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	}
 	
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		if(v==bMini){
 			this.dismiss();
 			ov.setWindowAnimation(android.R.style.Animation_Translucent);
@@ -147,29 +137,23 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	}
 
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-//		this.dismiss();
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			switch(keyCode){
 			case KeyEvent.KEYCODE_BACK:
 			case KeyEvent.KEYCODE_MENU:
 				this.dismiss();
 				return true;
-
 			}
 		}
 		return false;
-		
 	}
 	
 
 	
 	public void dismiss(){
+		// go away.
 		wm.removeView(this);
-		ov.focus();
-		
+		ov.focus(); // focus parent
 	}
-
-
 
 }

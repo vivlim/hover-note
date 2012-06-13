@@ -21,11 +21,9 @@ package com.mjlim.hovernote;
 import com.mjlim.hovernote.R;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 
 

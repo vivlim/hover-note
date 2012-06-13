@@ -22,37 +22,23 @@ package com.mjlim.hovernote;
 import com.mjlim.hovernote.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.SystemClock;
 import android.text.ClipboardManager;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
 
 
 public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
@@ -68,9 +54,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	private boolean resizing = false;
 	private boolean moving = false;
 	
-	private int initialPtrX = 0; // used for dragging
+	// these are all used to calculate new positions and height when dragging the window.
+	private int initialPtrX = 0; // the initial pointer x position, when beginning the drag action.
 	private int initialPtrY = 0;
-	private int initialX = 0;
+	private int initialX = 0; // initial x position of the window, at the time the drag action begins.
 	private int initialY = 0;
 	private int initialW = 0;
 	private int initialH = 0;
@@ -85,8 +72,11 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	private Drawable drActiveRect;
 	private Drawable drInactiveRect;
 	
-	final private int MIN_WIDTH = 350;
-	final private int MIN_HEIGHT = 128;
+	// arbitrarily selected minimum sizes
+	final private int MIN_WIDTH = 225;
+	final private int MIN_HEIGHT = 80;
+	final private int INITIAL_HEIGHT = 150;
+	final private int INITIAL_WIDTH_TABLET = 400;
 	
 	public HoverNoteView(Context context, WindowManager wm, int y){
 		this(context, wm, y, android.R.style.Animation_Dialog);
@@ -109,19 +99,22 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		
 		winparams.gravity = Gravity.LEFT | Gravity.TOP;
 		winparams.setTitle("HoverNote");
-		winparams.height = 150;
+		winparams.height = INITIAL_HEIGHT;
 		if(isTablet(context)){
-			winparams.width = 400;
+			// if we are on a tablet, the width isn't locked to the width of the screen. therefore, define width
+			winparams.width = INITIAL_WIDTH_TABLET;
 			winparams.x = y;
 		}
 
 		winparams.y=y;
 		
+		// so that it can be pushed up by the IME
 		winparams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 		
+		// retrieve blue border and gray border, to be used to indicate window focus state.
 		drActiveRect = this.getResources().getDrawable(R.drawable.activerectangle);
 		drInactiveRect = this.getResources().getDrawable(R.drawable.inactiverectangle);
-		this.setBackgroundDrawable(drInactiveRect);
+		this.setBackgroundDrawable(drInactiveRect); // start out with gray inactive border. doesn't really matter I guess, but whatever.
 		this.invalidate();
 	
 		// Retrieve UI elements
@@ -140,21 +133,16 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		ed.setOnKeyListener(this);
 		resizeHandle.setOnTouchListener(this);
 		moveHandle.setOnTouchListener(this);
-//		menuButton.setOnTouchListener(this);
 		menuButton.setOnClickListener(this);
 		menuButton.setOnKeyListener(this);
 		
 		winparams.windowAnimations = transition;
 		
-		
 		wm.addView(this, winparams);
 		
-		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE);
+		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE); // retrieve clipboardmanager, to be used with copy and paste.
 		
-		//Bind to service
-//		context.bindService(new Intent(context, OverlayTest.class), hnService, 0);
-		
-		this.focus();
+		this.focus(); 
 		
 	}
 	
@@ -185,35 +173,36 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	
 	public void close(){
-		((HoverNoteService)context).closeNote(this);
-		
-
+		((HoverNoteService)context).closeNote(this); // tell the service to close me.
 	}
 	public WindowManager.LayoutParams getWindowParams(){
-		return winparams;
+		return winparams; // yeah
 	}
 	
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
     {
 		switch(keyCode){
 			case KeyEvent.KEYCODE_BACK:
+				// back button unfocuses the note
 				this.unfocus();
 				return true;
 			case KeyEvent.KEYCODE_MENU:
+				// menu button shows the context menu. okay.
 				showMenu();
 				return true;
 		}
-				
-
         return false;
     }
 
 
 	public boolean onTouch(View v, MotionEvent me) {
-		// TODO Auto-generated method stub
+		// this handles touch events directed at any of the following:
+		// * the hovernote window
+		// * outside the hovernote window
+		// * any views in the hovernote window
+		// as such, it is huge and bloated. it works, but it's gross. will rework it in some way if I have time.
 		if((me.getActionMasked() & MotionEvent.ACTION_OUTSIDE) == MotionEvent.ACTION_OUTSIDE){
 			this.unfocus();
-//			return true;
 		}
 		else
 		{
@@ -222,8 +211,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 				return true;
 			}
 			
-			
 			if(resizing == true){
+				// are we in the middle of resizing?
 				if(me.getAction() == MotionEvent.ACTION_UP){
 					// Motion has ended, so stop the drag.
 					resizing = false;
@@ -238,6 +227,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 				}
 			}
 			else if(moving == true){
+				// are we in the middle of moving?
 				if(me.getAction() == MotionEvent.ACTION_UP){
 					// Motion has ended, so stop the drag.
 					moving = false;
@@ -253,37 +243,31 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 			}
 			if(v == ed){ // pass through to the text field if we're touching it
 				return ed.onTouchEvent(me);
-			}else if(v.getClass() == Button.class){
-				v.onTouchEvent(me);
 			}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
 				if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+					// we're touching the resize handle. start resizing
 					initialPtrX = (int)me.getRawX();
 					initialPtrY = (int)me.getRawY();
 					initialW = this.getWidth();
-//						if(initialW < 0){initialW = 400;}
 					initialH = this.getHeight();
 					resizing = true;
 				}else if(v == moveHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+					// touching the move handle, start that.
 					initialPtrX = (int)me.getRawX();
 					initialPtrY = (int)me.getRawY();
 					initialX = winparams.x;
 					initialY = winparams.y;		
 
-
 					moving = true;
 				}
 			}
 		}	
-		
-		
-		
-			
-		
 		return true;
 	}
 	
 	public void onClick(View v) {
 		if((v == menuButton)){
+//			pop up the context menu at the location of the button.
 			int pos[] = {0,0};
 			v.getLocationOnScreen(pos);
 			showMenu(pos[0],pos[1]);
@@ -291,13 +275,14 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	
 	public void showMenu(){
+//		show the context menu. default to position of menuButton
 		int pos[] = {0,0};
 		menuButton.getLocationOnScreen(pos);
 		showMenu(pos[0],pos[1]);
 	}
 	
 	public void showMenu(int x, int y){
-		
+//		
 		unfocus();
 		winparams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // required to block taps that close the context menu from activating apps below this one
     	wm.updateViewLayout(this, winparams);
@@ -305,12 +290,14 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		
 	}
 	public static boolean isTablet(Context context) {
+		// returns whether the app thinks we are on a tablet or not.
 	    return (context.getResources().getConfiguration().screenLayout
 	            & Configuration.SCREENLAYOUT_SIZE_MASK)
 	            >= Configuration.SCREENLAYOUT_SIZE_LARGE;
 	}
 	
 	public void toggleButtons(){
+		// show/hide button bar. this is a holdover from back when I wanted this to be a feature. I'll just leave it in.
 		if(layoutButtons.getVisibility()==GONE){
 			layoutButtons.setVisibility(VISIBLE);
 		}else
@@ -344,9 +331,11 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		ed.setText(s);
 	}
 	public void createNotif(){
+//		creates a notification that can be expanded by HoverNoteService into a copy of this note.
 		((HoverNoteService)context).createNotifForNote(this);
 	}
 	public void moveTo(int x, int y){
+		// reposition note window
 		if(isTablet(context)){
 			winparams.x = x;
 		}
@@ -354,12 +343,15 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		wm.updateViewLayout(this, winparams);
 	}
 	public void resizeTo(int width, int height){
+		// resize note window
 		winparams.width =  width;
 		winparams.height =  height;
 		wm.updateViewLayout(this, winparams);
 	}
 	
 	public void setWindowAnimation(int r){
+		// changes the animation this window will use when opening or closing.
+		// note that we can only use system animations
 		winparams.windowAnimations = r;
 		wm.updateViewLayout(this, winparams);
 	}
