@@ -176,15 +176,16 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
     {
-//		tv.setText("key");
-//		this.unfocus();
-		if(event.getAction() == KeyEvent.ACTION_UP)
-		if(keyCode == KeyEvent.KEYCODE_BACK){
-//	        context.stopService(new Intent(context, OverlayTest.class));
-	        this.unfocus(); 
-		}else if(keyCode == KeyEvent.KEYCODE_MENU){
-			showMenu();
+		switch(keyCode){
+			case KeyEvent.KEYCODE_BACK:
+				this.unfocus();
+				return true;
+			case KeyEvent.KEYCODE_MENU:
+				showMenu();
+				return true;
 		}
+				
+
         return false;
     }
 
@@ -203,72 +204,62 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 			}
 			
 			
-			if((me.getAction() == MotionEvent.ACTION_POINTER_UP) && (me.getPointerCount() == 2) ){ // Tap with two fingers: show/hide buttons.
-		        
-				if(layoutButtons.getVisibility()==GONE){
-					layoutButtons.setVisibility(VISIBLE);
+			if(resizing == true){
+				if(me.getAction() == MotionEvent.ACTION_UP){
+					// Motion has ended, so stop the drag.
+					resizing = false;
+					
 				}else{
-					layoutButtons.setVisibility(GONE);
+					winparams.height = Math.max(initialH + ((int)me.getRawY() - initialPtrY), MIN_HEIGHT);
+					if(isTablet(context)){
+						winparams.width =  Math.max(initialW + ((int)me.getRawX() - initialPtrX), MIN_WIDTH);
+					}
+					wm.updateViewLayout(this, winparams);
+					this.invalidate();
 				}
 			}
-			else // not doing multitouch gestures
-			{
-				if(resizing == true){
-					if(me.getAction() == MotionEvent.ACTION_UP){
-						// Motion has ended, so stop the drag.
-						resizing = false;
-						
-					}else{
-						winparams.height = Math.max(initialH + ((int)me.getRawY() - initialPtrY), MIN_HEIGHT);
-						if(isTablet(context)){
-							winparams.width =  Math.max(initialW + ((int)me.getRawX() - initialPtrX), MIN_WIDTH);
-						}
-						wm.updateViewLayout(this, winparams);
-						this.invalidate();
-					}
-				}
-				else if(moving == true){
-					if(me.getAction() == MotionEvent.ACTION_UP){
-						// Motion has ended, so stop the drag.
-						moving = false;
+			else if(moving == true){
+				if(me.getAction() == MotionEvent.ACTION_UP){
+					// Motion has ended, so stop the drag.
+					moving = false;
 
-					}else{
-						winparams.y = initialY + ((int)me.getRawY() - initialPtrY);
-						if(isTablet(context)){
-							winparams.x = initialX + ((int)me.getRawX() - initialPtrX);
-						}
-						wm.updateViewLayout(this, winparams);
-						this.invalidate();
+				}else{
+					winparams.y = initialY + ((int)me.getRawY() - initialPtrY);
+					if(isTablet(context)){
+						winparams.x = initialX + ((int)me.getRawX() - initialPtrX);
 					}
+					wm.updateViewLayout(this, winparams);
+					this.invalidate();
 				}
-				if(v == ed){ // pass through to the text field if we're touching it
-					ed.onTouchEvent(me);
-				}else if(v.getClass() == Button.class){
-					v.onTouchEvent(me);
-				}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
-					if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
-						initialPtrX = (int)me.getRawX();
-						initialPtrY = (int)me.getRawY();
-						initialW = this.getWidth();
+			}
+			if(v == ed){ // pass through to the text field if we're touching it
+				return ed.onTouchEvent(me);
+			}else if(v.getClass() == Button.class){
+				v.onTouchEvent(me);
+			}else if((resizing || moving) == false){ // only start resizing or moving if not already doing those.
+				if(v == resizeHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+					initialPtrX = (int)me.getRawX();
+					initialPtrY = (int)me.getRawY();
+					initialW = this.getWidth();
 //						if(initialW < 0){initialW = 400;}
-						initialH = this.getHeight();
-						resizing = true;
-					}else if(v == moveHandle && me.getAction() == MotionEvent.ACTION_DOWN){
-						initialPtrX = (int)me.getRawX();
-						initialPtrY = (int)me.getRawY();
-						initialX = winparams.x;
-						initialY = winparams.y;		
+					initialH = this.getHeight();
+					resizing = true;
+				}else if(v == moveHandle && me.getAction() == MotionEvent.ACTION_DOWN){
+					initialPtrX = (int)me.getRawX();
+					initialPtrY = (int)me.getRawY();
+					initialX = winparams.x;
+					initialY = winparams.y;		
 
 
-						moving = true;
-					}
+					moving = true;
 				}
-			}	
+			}
+		}	
+		
+		
+		
 			
-			
-			
-			
-		}
+		
 		return true;
 	}
 	
@@ -308,8 +299,22 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	
 	public void copy(){
-		clipboard.setText(ed.getText());
+		int start = ed.getSelectionStart();
+		int end = ed.getSelectionEnd();
+		if(start == end){
+			clipboard.setText(ed.getText()); // just copy everything, nothing is selected.
+		}else{
+			clipboard.setText(ed.getText().subSequence(Math.min(start,end), Math.max(start,end))); // copy what is selected
+		}
+		
 		Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show();
+	}
+	public void paste(){
+		CharSequence in = clipboard.getText();
+		int start = ed.getSelectionStart();
+		int end = ed.getSelectionEnd();
+		ed.setText(ed.getText().replace(Math.min(start, end), Math.max(start,end), in, 0, in.length()));
+		Toast.makeText(context, "Pasted", Toast.LENGTH_SHORT).show();
 	}
 	
 	public String getText(){

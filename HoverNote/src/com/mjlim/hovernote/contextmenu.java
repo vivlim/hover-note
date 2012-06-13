@@ -5,7 +5,6 @@ import com.mjlim.hovernote.R;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.text.ClipboardManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 
 	private WindowManager wm;
 	private WindowManager.LayoutParams winparams;
-	private ClipboardManager clipboard;
 
 	HoverNoteView ov;
 	ImageView bPaste, bCopy, bClose, bMini;
@@ -78,6 +76,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bCopy = (ImageView)findViewById(R.id.bCopy);
 		bClose = (ImageView)findViewById(R.id.bClose);
 		bMini = (ImageView)findViewById(R.id.bMini);
+		bPaste = (ImageView)findViewById(R.id.bPaste);
 //		((EditText)findViewById(R.id.editText1)).setOnKeyListener(this);
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -89,14 +88,12 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bCopy.setOnClickListener(this);
 		bClose.setOnClickListener(this);
 		bMini.setOnClickListener(this);
+		bPaste.setOnClickListener(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams);
 
-		this.requestFocus();
-		
-		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE);
-		
+		this.requestFocus();		
 	}
 
 	public boolean onTouch(View v, MotionEvent me) {
@@ -119,6 +116,9 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		}else if(v==bCopy){
 			this.dismiss();
 			ov.copy();
+		}else if(v==bPaste){
+			this.dismiss();
+			ov.paste();
 		}else if(v==bClose){
 			this.dismiss();
 			ov.setWindowAnimation(android.R.style.Animation_Dialog);
