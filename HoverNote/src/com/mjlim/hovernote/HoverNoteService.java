@@ -137,6 +137,7 @@ public class HoverNoteService extends Service {
 			}
 		}
 		int screenHeight = wm.getDefaultDisplay().getHeight();
+		
 		HoverNoteView oView = new HoverNoteView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
 		oViews.add(oView);

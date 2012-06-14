@@ -47,13 +47,14 @@
                 android:layout_weight="0"
                 android:padding="1px"
                 android:src="@drawable/hnicon64" />
-
+
             <TextView
                 android:id="@+id/appName"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_weight="0"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="@string/app_name_lowercase"
                 android:textColor="#33B5E5"
                 android:textSize="18dp" />

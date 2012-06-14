@@ -79,6 +79,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	final private int INITIAL_HEIGHT = 150;
 	final private int INITIAL_WIDTH_TABLET = 400;
 	
+	private int MAX_HEIGHT;
+	private int MAX_WIDTH;
+	
 	public HoverNoteView(Context context, WindowManager wm, int y){
 		this(context, wm, y, android.R.style.Animation_Dialog);
 	}
@@ -92,6 +95,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		inflater.inflate(R.layout.overlay, this);
 		
 		this.wm = wm;
+		
+		MAX_HEIGHT = wm.getDefaultDisplay().getHeight();
+		MAX_WIDTH = wm.getDefaultDisplay().getWidth();
 		
 		winparams = new WindowManager.LayoutParams(
 						WindowManager.LayoutParams.TYPE_PHONE |
@@ -188,15 +194,20 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
     {
-		switch(keyCode){
-			case KeyEvent.KEYCODE_BACK:
-				// back button unfocuses the note
-				this.unfocus();
-				return true;
-			case KeyEvent.KEYCODE_MENU:
-				// menu button shows the context menu. okay.
-				showMenu();
-				return true;
+		if(event.getAction() == KeyEvent.ACTION_UP){
+			switch(keyCode){
+				case KeyEvent.KEYCODE_BACK:
+					// back button unfocuses the note
+					this.unfocus();
+					return true;
+				case KeyEvent.KEYCODE_MENU:
+					// menu button shows the context menu. okay.
+					showMenu();
+					return true;
+				case KeyEvent.KEYCODE_SEARCH:
+					// search toggles the title bar and controls.
+					this.toggleButtons();
+			}
 		}
         return false;
     }
@@ -225,10 +236,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 					resizing = false;
 					
 				}else{
-					winparams.height = Math.max(initialH + ((int)me.getRawY() - initialPtrY), MIN_HEIGHT);
-					if(isTablet(context)){
-						winparams.width =  Math.max(initialW + ((int)me.getRawX() - initialPtrX), MIN_WIDTH);
-					}
+					winparams.height = Math.min(Math.max(initialH + ((int)me.getRawY() - initialPtrY), MIN_HEIGHT),MAX_HEIGHT);
+					winparams.width =  Math.min(Math.max(initialW + ((int)me.getRawX() - initialPtrX), MIN_WIDTH),MAX_WIDTH);
 					wm.updateViewLayout(this, winparams);
 					this.invalidate();
 				}
@@ -241,9 +250,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 
 				}else{
 					winparams.y = initialY + ((int)me.getRawY() - initialPtrY);
-					if(isTablet(context)){
-						winparams.x = initialX + ((int)me.getRawX() - initialPtrX);
-					}
+					winparams.x = initialX + ((int)me.getRawX() - initialPtrX);
 					wm.updateViewLayout(this, winparams);
 					this.invalidate();
 				}
@@ -306,9 +313,15 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	public void toggleButtons(){
 		// show/hide button bar. this is a holdover from back when I wanted this to be a feature. I'll just leave it in.
 		if(layoutButtons.getVisibility()==GONE){
+			winparams.height = winparams.height + layoutButtons.getHeight();
 			layoutButtons.setVisibility(VISIBLE);
-		}else
+		}else{
+			winparams.height = winparams.height - layoutButtons.getHeight();
 			layoutButtons.setVisibility(GONE);
+			Toast.makeText(context, "hovernote controls hidden (press search to bring them back)", Toast.LENGTH_SHORT).show();
+		}
+		wm.updateViewLayout(this, winparams);
+
 	}
 	
 	public void copy(){
