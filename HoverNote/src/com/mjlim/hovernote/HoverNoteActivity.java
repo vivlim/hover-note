@@ -35,15 +35,7 @@ public class HoverNoteActivity extends Activity {
         Intent intent = getIntent();
         String action = intent.getAction();
 
-        if(Intent.ACTION_MAIN.equals(action)){
-	        // start service
-	        Intent i = new Intent(this, HoverNoteService.class);
-	        i.setAction(HoverNoteService.INTENT_NEW_NOTE);
-	        startService(i);
-	  
-//	        setContentView(R.layout.main); // .. not really necessary, this is just the default hello world stuff LOL!
-	        finish();
-        }else if(Intent.ACTION_SEND.equals(action)){
+        if(Intent.ACTION_SEND.equals(action)){ // sharing something to hovernote? do this.
         	// alter the intent action to work with the service
         	Intent i = new Intent(this, HoverNoteService.class);
         	i.setAction("com.mjlim.hovernote.SEND_TO_NOTE");
@@ -51,6 +43,15 @@ public class HoverNoteActivity extends Activity {
         	i.setDataAndType(intent.getData(), intent.getType());
         	startService(i); // pass it on
         	finish(); // go away
+        }
+        else{ // in any other case we just start a new note
+	        // start service
+	        Intent i = new Intent(this, HoverNoteService.class);
+	        i.setAction(HoverNoteService.INTENT_NEW_NOTE);
+	        startService(i);
+	  
+//	        setContentView(R.layout.main); // .. not really necessary, this is just the default hello world stuff LOL!
+	        finish();
         }
     }
 }

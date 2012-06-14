@@ -60,6 +60,7 @@ public class HoverNoteService extends Service {
 	public static final String REMAKE_Y_KEY = "com.mjlim.hovernote.y"; // y position of a remade note
 	public static final String REMAKE_WIDTH_KEY = "com.mjlim.hovernote.width"; // width of a remade note
 	public static final String REMAKE_HEIGHT_KEY = "com.mjlim.hovernote.height"; // height of a remade note
+	public static final String REMAKE_CURSORPOS_KEY = "com.mjlim.hovernote.cursorpos"; // location of cursor in the text field
 		
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -95,8 +96,11 @@ public class HoverNoteService extends Service {
 			int y = i.getIntExtra(REMAKE_Y_KEY, 0);
 			int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
 			int height = i.getIntExtra(REMAKE_HEIGHT_KEY, 0);
+			int cursorpos = i.getIntExtra(REMAKE_CURSORPOS_KEY, 0);
 			note.moveTo(x, y);
 			note.resizeTo(width, height);
+			note.getEditText().setSelection(cursorpos);
+
 		}
 		else if(i.getAction().equals(INTENT_SEND_TO_NOTE)){
 			String fromSend = i.getStringExtra(Intent.EXTRA_TEXT);
@@ -188,6 +192,7 @@ public class HoverNoteService extends Service {
 		nIntent.putExtra(REMAKE_Y_KEY, wp.y);
 		nIntent.putExtra(REMAKE_HEIGHT_KEY, wp.height);
 		nIntent.putExtra(REMAKE_WIDTH_KEY, wp.width);
+		nIntent.putExtra(REMAKE_CURSORPOS_KEY, v.getEditText().getSelectionStart());
 		nIntent.setAction(INTENT_REMAKE_NOTE);
 		nIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		nIntent.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));

@@ -382,4 +382,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		this.minimize();
 		context.getApplicationContext().startActivity(chooser);
 	}
+	
+	protected EditText getEditText(){
+		return ed;
+	}
 }
