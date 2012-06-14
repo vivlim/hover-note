@@ -52,6 +52,7 @@ public class HoverNoteService extends Service {
 	// Define the intents
 	public static final String INTENT_NEW_NOTE = "com.mjlim.hovernote.NEW_NOTE";
 	public static final String INTENT_REMAKE_NOTE = "com.mjlim.hovernote.REMAKE_NOTE";
+	public static final String INTENT_SEND_TO_NOTE = "com.mjlim.hovernote.SEND_TO_NOTE";
 	
 	// define the intent extra keys we will be using.
 	public static final String REMAKE_TEXT_KEY = "com.mjlim.hovernote.text"; // text to expand into a remade note
@@ -96,6 +97,10 @@ public class HoverNoteService extends Service {
 			int height = i.getIntExtra(REMAKE_HEIGHT_KEY, 0);
 			note.moveTo(x, y);
 			note.resizeTo(width, height);
+		}
+		else if(i.getAction().equals(INTENT_SEND_TO_NOTE)){
+			String fromSend = i.getStringExtra(Intent.EXTRA_TEXT);
+			HoverNoteView note = newNote(fromSend, android.R.style.Animation_Translucent);
 		}
 		else{
 			newNote();

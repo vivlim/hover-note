@@ -16,6 +16,11 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+			<intent-filter>
+       			<action android:name="android.intent.action.SEND" />
+        		<category android:name="android.intent.category.DEFAULT" />
+        		<data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
         <service android:enabled="true" android:name="com.mjlim.hovernote.HoverNoteService">
             <intent-filter android:label="New Note">
@@ -24,6 +29,11 @@
             <intent-filter>
                 <action android:name="com.mjlim.hovernote.REMAKE_NOTE"/>
             </intent-filter>
+			<intent-filter>
+                <action android:name="com.mjlim.hovernote.SEND_TO_NOTE"/>
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
             
         </service>
     </application>

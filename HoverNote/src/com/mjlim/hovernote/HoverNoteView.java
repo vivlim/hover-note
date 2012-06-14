@@ -23,6 +23,7 @@ import com.mjlim.hovernote.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.text.ClipboardManager;
@@ -174,6 +175,12 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	public void close(){
 		((HoverNoteService)context).closeNote(this); // tell the service to close me.
+	}
+	
+	public void minimize(){
+		this.setWindowAnimation(android.R.style.Animation_Translucent);
+		this.createNotif();
+		this.close();
 	}
 	public WindowManager.LayoutParams getWindowParams(){
 		return winparams; // yeah
@@ -360,4 +367,19 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		wm.updateViewLayout(this, winparams);
 	}
 
+	public void share(){
+		// creates an intent to share the contents of this note.
+
+		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+		intent.setType("text/plain");
+
+	    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		
+		intent.putExtra(Intent.EXTRA_TEXT, this.getText());
+		Intent chooser = Intent.createChooser(intent, "How do you want to share this note?");
+		chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		
+		this.minimize();
+		context.getApplicationContext().startActivity(chooser);
+	}
 }

@@ -38,21 +38,23 @@ public final class R {
         public static final int paste_blue32=0x7f02000d;
         public static final int paste_white48=0x7f02000e;
         public static final int resizehandle=0x7f02000f;
+        public static final int share_white48=0x7f020010;
     }
     public static final class id {
-        public static final int appIcon=0x7f090008;
-        public static final int appName=0x7f090009;
-        public static final int bClose=0x7f090003;
+        public static final int appIcon=0x7f090009;
+        public static final int appName=0x7f09000a;
+        public static final int bClose=0x7f090004;
         public static final int bCopy=0x7f090000;
-        public static final int bMini=0x7f090002;
+        public static final int bMini=0x7f090003;
         public static final int bPaste=0x7f090001;
-        public static final int close=0x7f09000c;
-        public static final int copy=0x7f09000b;
-        public static final int ed=0x7f090004;
-        public static final int layoutButtons=0x7f090005;
-        public static final int menuButton=0x7f090006;
-        public static final int moveHandle=0x7f090007;
-        public static final int resizeHandle=0x7f09000a;
+        public static final int bShare=0x7f090002;
+        public static final int close=0x7f09000d;
+        public static final int copy=0x7f09000c;
+        public static final int ed=0x7f090005;
+        public static final int layoutButtons=0x7f090006;
+        public static final int menuButton=0x7f090007;
+        public static final int moveHandle=0x7f090008;
+        public static final int resizeHandle=0x7f09000b;
     }
     public static final class layout {
         public static final int contextmenu=0x7f030000;

@@ -31,13 +31,26 @@ public class HoverNoteActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        Intent intent = getIntent();
+        String action = intent.getAction();
 
-        // start service
-        Intent i = new Intent(this, HoverNoteService.class);
-        i.setAction(HoverNoteService.INTENT_NEW_NOTE);
-        startService(i);
-  
-        setContentView(R.layout.main);
-        finish();
+        if(Intent.ACTION_MAIN.equals(action)){
+	        // start service
+	        Intent i = new Intent(this, HoverNoteService.class);
+	        i.setAction(HoverNoteService.INTENT_NEW_NOTE);
+	        startService(i);
+	  
+//	        setContentView(R.layout.main); // .. not really necessary, this is just the default hello world stuff LOL!
+	        finish();
+        }else if(Intent.ACTION_SEND.equals(action)){
+        	// alter the intent action to work with the service
+        	Intent i = new Intent(this, HoverNoteService.class);
+        	i.setAction("com.mjlim.hovernote.SEND_TO_NOTE");
+        	i.putExtras(intent); // rip all of the extras from the external intent
+        	i.setDataAndType(intent.getData(), intent.getType());
+        	startService(i); // pass it on
+        	finish(); // go away
+        }
     }
 }

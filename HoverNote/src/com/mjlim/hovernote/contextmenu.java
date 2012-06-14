@@ -40,8 +40,8 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	private WindowManager wm;
 	private WindowManager.LayoutParams winparams;
 
-	HoverNoteView ov;
-	ImageView bPaste, bCopy, bClose, bMini;
+	HoverNoteView noteView;
+	ImageView bPaste, bCopy, bClose, bMini, bShare;
 	
 	public contextmenu(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context);
@@ -54,7 +54,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		
 		this.setBackgroundDrawable(drActiveRect);
 		
-		this.ov=ov;
+		this.noteView=ov;
 		this.wm = wm;
 		
 		winparams = new WindowManager.LayoutParams(
@@ -90,6 +90,8 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bClose = (ImageView)findViewById(R.id.bClose);
 		bMini = (ImageView)findViewById(R.id.bMini);
 		bPaste = (ImageView)findViewById(R.id.bPaste);
+		bShare = (ImageView)findViewById(R.id.bShare);
+		
 		// Assign listeners
 		this.setOnTouchListener(this);
 		this.setOnKeyListener(this);
@@ -99,6 +101,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bClose.setOnClickListener(this);
 		bMini.setOnClickListener(this);
 		bPaste.setOnClickListener(this);
+		bShare.setOnClickListener(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams); // make it visible
@@ -119,19 +122,20 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	public void onClick(View v) {
 		if(v==bMini){
 			this.dismiss();
-			ov.setWindowAnimation(android.R.style.Animation_Translucent);
-			ov.createNotif();
-			ov.close();
+			noteView.minimize();
 		}else if(v==bCopy){
 			this.dismiss();
-			ov.copy();
+			noteView.copy();
 		}else if(v==bPaste){
 			this.dismiss();
-			ov.paste();
+			noteView.paste();
+		}else if(v==bShare){
+			this.dismiss();
+			noteView.share();
 		}else if(v==bClose){
 			this.dismiss();
-			ov.setWindowAnimation(android.R.style.Animation_Dialog);
-			ov.close();
+			noteView.setWindowAnimation(android.R.style.Animation_Dialog);
+			noteView.close();
 		}
 		
 	}
@@ -153,7 +157,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	public void dismiss(){
 		// go away.
 		wm.removeView(this);
-		ov.focus(); // focus parent
+		noteView.focus(); // focus parent
 	}
 
 }

@@ -19,6 +19,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/paste_white48" />
+
+    <com.mjlim.hovernote.MLImageButton
+        android:id="@+id/bShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/share_white48" />
 
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bMini"
