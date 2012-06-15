@@ -88,25 +88,31 @@ public class HoverNoteService extends Service {
 	
 	public int onStartCommand(Intent i, int flags, int startId){
 		super.onStartCommand(i, flags, startId);
-		if(i.getAction().equals(INTENT_NEW_NOTE)){
-			newNote();
-		}else if(i.getAction().equals(INTENT_REMAKE_NOTE)){
-			HoverNoteView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY), android.R.style.Animation_Translucent);
-			int x = i.getIntExtra(REMAKE_X_KEY, 0);
-			int y = i.getIntExtra(REMAKE_Y_KEY, 0);
-			int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
-			int height = i.getIntExtra(REMAKE_HEIGHT_KEY, 0);
-			int cursorpos = i.getIntExtra(REMAKE_CURSORPOS_KEY, 0);
-			note.moveTo(x, y);
-			note.resizeTo(width, height);
-			note.getEditText().setSelection(cursorpos);
-
-		}
-		else if(i.getAction().equals(INTENT_SEND_TO_NOTE)){
-			String fromSend = i.getStringExtra(Intent.EXTRA_TEXT);
-			HoverNoteView note = newNote(fromSend, android.R.style.Animation_Translucent);
-		}
-		else{
+		try{
+			if(i.getAction().equals(INTENT_NEW_NOTE)){
+				newNote();
+			}else if(i.getAction().equals(INTENT_REMAKE_NOTE)){
+				HoverNoteView note = newNote(i.getStringExtra(REMAKE_TEXT_KEY), android.R.style.Animation_Translucent);
+				int x = i.getIntExtra(REMAKE_X_KEY, 0);
+				int y = i.getIntExtra(REMAKE_Y_KEY, 0);
+				int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
+				int height = i.getIntExtra(REMAKE_HEIGHT_KEY, 0);
+				int cursorpos = i.getIntExtra(REMAKE_CURSORPOS_KEY, 0);
+				note.moveTo(x, y);
+				note.resizeTo(width, height);
+				note.getEditText().setSelection(cursorpos);
+	
+			}
+			else if(i.getAction().equals(INTENT_SEND_TO_NOTE)){
+				String fromSend = i.getStringExtra(Intent.EXTRA_TEXT);
+				HoverNoteView note = newNote(fromSend, android.R.style.Animation_Translucent);
+			}
+			else{
+				newNote();
+			}
+		}catch(NullPointerException npe){
+			// So a null pointer was passed in somewhere... fail silently and just open an empty note.
+			// hunch: i.getAction() returned null
 			newNote();
 		}
 		return START_STICKY;
