@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, OverlayTestActivity!</string>
-    <string name="app_name">HoverNote</string>
+    <string name="app_name">hovernote</string>
     <string name="bCopy">Copy</string>
     <string name="bPaste">Paste</string>
     <string name="bFull">Full Screen</string>
