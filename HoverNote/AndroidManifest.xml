@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.mjlim.hovernote"
-    android:versionCode="2"
-    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="3"
+    android:versionName="1.01" xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto">
 
     <uses-sdk android:minSdkVersion="10"
