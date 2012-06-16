@@ -29,6 +29,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.view.WindowManager;
@@ -53,6 +55,7 @@ public class HoverNoteService extends Service {
 	public static final String INTENT_NEW_NOTE = "com.mjlim.hovernote.NEW_NOTE";
 	public static final String INTENT_REMAKE_NOTE = "com.mjlim.hovernote.REMAKE_NOTE";
 	public static final String INTENT_SEND_TO_NOTE = "com.mjlim.hovernote.SEND_TO_NOTE";
+	public static final String INTENT_OPEN_NOTE_FILE = "com.mjlim.hovernote.OPEN_NOTE_FILE";
 	
 	// define the intent extra keys we will be using.
 	public static final String REMAKE_TEXT_KEY = "com.mjlim.hovernote.text"; // text to expand into a remade note
@@ -107,6 +110,10 @@ public class HoverNoteService extends Service {
 				String fromSend = i.getStringExtra(Intent.EXTRA_TEXT);
 				HoverNoteView note = newNote(fromSend, android.R.style.Animation_Translucent);
 			}
+			else if(i.getAction().equals(INTENT_OPEN_NOTE_FILE)){
+				String path = i.getData().getPath();
+				newNoteFromFile(path);
+			}
 			else{
 				newNote();
 			}
@@ -148,6 +155,14 @@ public class HoverNoteService extends Service {
 		oView.setText(s);
 		oViews.add(oView);
 		return oView;
+		
+	}
+	
+	public HoverNoteView newNoteFromFile(String filename){
+		HoverNoteView n = newNote("Loading note \""+filename+"\", please wait...", android.R.style.Animation_Dialog);
+		n.loadFile(filename);
+		
+		return n;
 		
 	}
 	
@@ -210,6 +225,5 @@ public class HoverNoteService extends Service {
 		nm.notify((int)(System.currentTimeMillis()), n); // use current time as the unique id for the notification. casting long to int may lose some information, but for our purposes that is alright. 
 		
 	}
-
 	
 }

@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.text.ClipboardManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -36,6 +38,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
@@ -50,6 +53,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	private ImageView resizeHandle;
 	private LinearLayout moveHandle;
 	private ImageView menuButton;
+	private TextView windowTitle;
 	
 	private boolean focused = true;
 	private boolean resizing = false;
@@ -81,6 +85,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	private int MAX_HEIGHT;
 	private int MAX_WIDTH;
+	
+	private boolean isFile = false;
+	private String filename = null;
 	
 	public HoverNoteView(Context context, WindowManager wm, int y){
 		this(context, wm, y, android.R.style.Animation_Dialog);
@@ -132,6 +139,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		resizeHandle = (ImageView)findViewById(R.id.resizeHandle);
 		moveHandle = (LinearLayout)findViewById(R.id.moveHandle);
 		menuButton = (ImageView)findViewById(R.id.menuButton);
+		windowTitle = (TextView)findViewById(R.id.windowTitle);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -404,4 +412,33 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	protected EditText getEditText(){
 		return ed;
 	}
+	
+	public void loadFile(String fn){
+		this.filename = fn;
+		this.isFile = true;
+		windowTitle.setText(fn);
+		new LoadFilesTask().execute(fn);
+	}
+	private class LoadFilesTask extends AsyncTask<String, Void, String>{
+
+		
+		@Override
+		protected String doInBackground(String... filenames) {
+			int count = filenames.length;
+			String contents = "";
+			for(int i = 0; i< count; i++){
+//				NoteFileManager.getFile(filenames[i]);
+				contents = NoteFileManager.getFile(filenames[i]);
+			}
+			return contents;
+		}
+		
+		protected void onPostExecute(String result){
+			ed.setText(result);
+		}
+		
+	}
+
 }
+
+

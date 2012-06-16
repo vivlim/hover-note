@@ -34,13 +34,22 @@ public class HoverNoteActivity extends Activity {
         
         Intent intent = getIntent();
         String action = intent.getAction();
+        String type = intent.getType();
 
         if(Intent.ACTION_SEND.equals(action)){ // sharing something to hovernote? do this.
         	// alter the intent action to work with the service
         	Intent i = new Intent(this, HoverNoteService.class);
-        	i.setAction("com.mjlim.hovernote.SEND_TO_NOTE");
+        	i.setAction(HoverNoteService.INTENT_SEND_TO_NOTE);
         	i.putExtras(intent); // rip all of the extras from the external intent
         	i.setDataAndType(intent.getData(), intent.getType());
+        	startService(i); // pass it on
+        	finish(); // go away
+        }
+        else if	((action.equals(Intent.ACTION_VIEW) || action.equals(Intent.ACTION_EDIT)) && type.equals("text/plain")){
+        	Intent i = new Intent(this, HoverNoteService.class);
+        	i.setAction(HoverNoteService.INTENT_OPEN_NOTE_FILE);
+        	i.putExtras(intent); // rip all of the extras from the external intent
+        	i.setDataAndType(intent.getData(), intent.getType()); // data and type too
         	startService(i); // pass it on
         	finish(); // go away
         }
