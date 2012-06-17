@@ -19,6 +19,8 @@
 
 package com.mjlim.hovernote;
 
+import java.io.IOException;
+
 import com.mjlim.hovernote.R;
 
 import android.app.Activity;
@@ -40,9 +42,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
 
 
 public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
@@ -54,6 +58,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	private LinearLayout moveHandle;
 	private ImageView menuButton;
 	private TextView windowTitle;
+	
+	private ViewFlipper viewFlipper;
+	private SaveDialog saveDialog;
+	private SettingsDialog settingsDialog;
 	
 	private boolean focused = true;
 	private boolean resizing = false;
@@ -141,6 +149,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		menuButton = (ImageView)findViewById(R.id.menuButton);
 		windowTitle = (TextView)findViewById(R.id.windowTitle);
 		
+		viewFlipper = (ViewFlipper)findViewById(R.id.viewFlipper);
+		saveDialog = (SaveDialog)findViewById(R.id.saveDialog);
+		settingsDialog = (SettingsDialog)findViewById(R.id.settingsDialog);
+		
 		// Assign listeners
 		this.setOnTouchListener(this);
 		this.setOnKeyListener(this);
@@ -150,10 +162,20 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		moveHandle.setOnTouchListener(this);
 		menuButton.setOnClickListener(this);
 		menuButton.setOnKeyListener(this);
-		
+			
 		winparams.windowAnimations = transition;
 		
+		saveDialog.setOnKeyListener(this);
+		settingsDialog.setOnKeyListener(this);
+		
+		viewFlipper.setInAnimation(AnimationUtils.loadAnimation(context,R.anim.slideup));
+		viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(context,R.anim.slidedown));
+		
 		wm.addView(this, winparams);
+		
+		// allow the different dialogs to call functions of the note
+		settingsDialog.setNote(this); // MUST happen after view was added to wm
+		saveDialog.setNote(this);
 		
 		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE); // retrieve clipboardmanager, to be used with copy and paste.
 		
@@ -171,6 +193,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 
 		((HoverNoteService) context).raiseOrUpdate(this, winparams);
 		
+		saveDialog.setOnTouchListener(null);
+		settingsDialog.setOnTouchListener(null);
+		
     	this.postInvalidate();//redraw
 	}
 	
@@ -182,6 +207,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		winparams.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // set this flag on
 		winparams.flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 		ed.setFocusable(false);
+		
+		saveDialog.setOnTouchListener(this);
+		settingsDialog.setOnTouchListener(this);
+		
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
     	
@@ -200,13 +229,23 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		return winparams; // yeah
 	}
 	
+	protected void setWindowParams(WindowManager.LayoutParams wp){
+		winparams = wp;
+		wm.updateViewLayout(this, winparams);
+	}
+	
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
     {
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			switch(keyCode){
 				case KeyEvent.KEYCODE_BACK:
-					// back button unfocuses the note
-					this.unfocus();
+					if(viewFlipper.getDisplayedChild() != 0){
+						// not looking at the note screen? jump back to that.
+						viewFlipper.setDisplayedChild(0);
+					}else{
+						// looking at the note? back button unfocuses the window.
+						this.unfocus();
+					}
 					return true;
 				case KeyEvent.KEYCODE_MENU:
 					// menu button shows the context menu. okay.
@@ -298,6 +337,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	public void showMenu(){
 //		show the context menu. default to position of menuButton
+		if(viewFlipper.getDisplayedChild() != 0){
+			viewFlipper.setDisplayedChild(0);
+		}
+		
 		int pos[] = {0,0};
 		menuButton.getLocationOnScreen(pos);
 		showMenu(pos[0],pos[1]);
@@ -305,6 +348,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	
 	public void showMenu(int x, int y){
 //		
+		if(viewFlipper.getDisplayedChild() != 0){
+			viewFlipper.setDisplayedChild(0);
+		}
 		unfocus();
 		winparams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // required to block taps that close the context menu from activating apps below this one
     	wm.updateViewLayout(this, winparams);
@@ -414,10 +460,18 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	
 	public void loadFile(String fn){
+		setFilename(fn);
+		new LoadFilesTask().execute(fn);
+	}
+	public void setFilename(String fn){
+		// sets filename in the ui
 		this.filename = fn;
 		this.isFile = true;
 		windowTitle.setText(fn);
-		new LoadFilesTask().execute(fn);
+		saveDialog.setFilename(fn);
+	}
+	public String getFilename(){
+		return this.filename;
 	}
 	private class LoadFilesTask extends AsyncTask<String, Void, String>{
 
@@ -438,6 +492,72 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		}
 		
 	}
+	
+	public void saveFile(String fn){
+		this.filename = fn;
+		this.isFile = true;
+		windowTitle.setText(fn);
+		FilenameAndContent info = new FilenameAndContent();
+		info.filename = fn;
+		info.content = ed.getText().toString();
+		new SaveFilesTask().execute(info);
+	}
+	
+	private class FilenameAndContent{
+		public String filename, content;
+	}
+	
+	private class SaveFilesTask extends AsyncTask<FilenameAndContent, Void, String>{
+
+		
+		@Override
+		protected String doInBackground(FilenameAndContent... info) {
+			int count = info.length;
+			String resultMsg="";
+			for(int i = 0; i< count; i++){
+				try{
+					NoteFileManager.writeFile(info[i].filename, info[i].content);
+					resultMsg = "Saved to " + info[i].filename;
+				}
+				catch(IOException e){
+					resultMsg = "Sorry, unable to save to " + info[i].filename;
+					e.printStackTrace();
+				}
+			}
+			return resultMsg;
+		}
+		
+		protected void onPostExecute(String resultMsg){
+			Toast.makeText(context, resultMsg, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public void showSave(){
+		viewFlipper.setDisplayedChild(1);
+//		Intent intent = new Intent(context.getApplicationContext(), SaveDialog.class);
+//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		context.getApplicationContext().startActivity(intent);
+	}
+	
+	public void showSettings(){
+		viewFlipper.setDisplayedChild(2);
+	}
+
+	protected HoverNoteService getService(){
+		return ((HoverNoteService) context);
+	}
+	
+	public void setAlpha(float alpha){
+		winparams.alpha = alpha;
+		this.setWindowParams(winparams);
+	}
+	
+	public void leaveDialogs(){
+		if(viewFlipper.getDisplayedChild() != 0){
+			viewFlipper.setDisplayedChild(0);
+		}
+	}
+	
 
 }
 

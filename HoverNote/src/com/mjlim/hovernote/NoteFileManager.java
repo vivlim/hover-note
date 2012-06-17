@@ -1,9 +1,11 @@
 package com.mjlim.hovernote;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -42,6 +44,17 @@ public class NoteFileManager {
 			returnValue = "There was a problem reading the file.";
 		}
 		return returnValue;
+
+	}
+	
+	public static void writeFile(String filename, String contents) throws IOException {
+		Log.v("com.mjlim.hovernote", "Trying to open file " + filename);
+		
+		FileWriter fw = new FileWriter(filename,false);
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		bw.write(contents);
+		bw.close();
 
 	}
 }

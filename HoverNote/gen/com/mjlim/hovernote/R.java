@@ -9,8 +9,8 @@ package com.mjlim.hovernote;
 
 public final class R {
     public static final class anim {
-        public static final int slideup=0x7f040000;
-        public static final int slideuplayout=0x7f040001;
+        public static final int slidedown=0x7f040000;
+        public static final int slideup=0x7f040001;
     }
     public static final class array {
         public static final int menu_items=0x7f070000;
@@ -38,29 +38,44 @@ public final class R {
         public static final int paste_blue32=0x7f02000d;
         public static final int paste_white48=0x7f02000e;
         public static final int resizehandle=0x7f02000f;
-        public static final int settings_white48=0x7f020010;
-        public static final int share_white48=0x7f020011;
+        public static final int save_white48=0x7f020010;
+        public static final int settings_white48=0x7f020011;
+        public static final int share_white48=0x7f020012;
     }
     public static final class id {
-        public static final int appIcon=0x7f090009;
-        public static final int bClose=0x7f090004;
+        public static final int SDsaveButton=0x7f090012;
+        public static final int SDsaveToPath=0x7f090011;
+        public static final int appIcon=0x7f09000e;
+        public static final int bClose=0x7f090006;
         public static final int bCopy=0x7f090000;
-        public static final int bMini=0x7f090003;
+        public static final int bDefaultTransparency=0x7f090016;
+        public static final int bMini=0x7f090005;
         public static final int bPaste=0x7f090001;
-        public static final int bShare=0x7f090002;
-        public static final int close=0x7f09000d;
-        public static final int copy=0x7f09000c;
-        public static final int ed=0x7f090005;
-        public static final int layoutButtons=0x7f090006;
-        public static final int menuButton=0x7f090007;
-        public static final int moveHandle=0x7f090008;
-        public static final int resizeHandle=0x7f09000b;
-        public static final int windowTitle=0x7f09000a;
+        public static final int bSave=0x7f090002;
+        public static final int bSettings=0x7f090004;
+        public static final int bShare=0x7f090003;
+        public static final int chkNotifClose=0x7f090017;
+        public static final int close=0x7f090019;
+        public static final int copy=0x7f090018;
+        public static final int ed=0x7f090008;
+        public static final int layoutButtons=0x7f09000b;
+        public static final int menuButton=0x7f09000c;
+        public static final int moveHandle=0x7f09000d;
+        public static final int resizeHandle=0x7f090010;
+        public static final int saveDialog=0x7f090009;
+        public static final int scrollView1=0x7f090013;
+        public static final int seekTransparencyBar=0x7f090015;
+        public static final int settingsDialog=0x7f09000a;
+        public static final int textView1=0x7f090014;
+        public static final int viewFlipper=0x7f090007;
+        public static final int windowTitle=0x7f09000f;
     }
     public static final class layout {
         public static final int contextmenu=0x7f030000;
         public static final int main=0x7f030001;
         public static final int overlay=0x7f030002;
+        public static final int savedialog=0x7f030003;
+        public static final int settingsdialog=0x7f030004;
     }
     public static final class menu {
         public static final int appmenu=0x7f080000;
@@ -72,9 +87,15 @@ public final class R {
         public static final int bCopy=0x7f060002;
         public static final int bFull=0x7f060004;
         public static final int bPaste=0x7f060003;
+        public static final int browse=0x7f06000e;
+        public static final int defaultTransparency=0x7f06000c;
+        public static final int filePathHint=0x7f06000a;
         public static final int hello=0x7f060000;
         public static final int highlightColor=0x7f060006;
         public static final int menuClose=0x7f060007;
         public static final int menuCopy=0x7f060008;
+        public static final int notifAfterClose=0x7f06000f;
+        public static final int saveTxt=0x7f06000d;
+        public static final int windowTransparency=0x7f06000b;
     }
 }

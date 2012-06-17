@@ -41,7 +41,7 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 	private WindowManager.LayoutParams winparams;
 
 	HoverNoteView noteView;
-	ImageView bPaste, bCopy, bClose, bMini, bShare;
+	ImageView bPaste, bCopy, bClose, bMini, bShare, bSave, bSettings;
 	
 	public contextmenu(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context);
@@ -91,6 +91,8 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bMini = (ImageView)findViewById(R.id.bMini);
 		bPaste = (ImageView)findViewById(R.id.bPaste);
 		bShare = (ImageView)findViewById(R.id.bShare);
+		bSave = (ImageView)findViewById(R.id.bSave);
+		bSettings = (ImageView)findViewById(R.id.bSettings);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
@@ -102,6 +104,8 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		bMini.setOnClickListener(this);
 		bPaste.setOnClickListener(this);
 		bShare.setOnClickListener(this);
+		bSave.setOnClickListener(this);
+		bSettings.setOnClickListener(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams); // make it visible
@@ -132,6 +136,12 @@ public class contextmenu extends LinearLayout implements OnKeyListener, OnTouchL
 		}else if(v==bShare){
 			this.dismiss();
 			noteView.share();
+		}else if(v==bSave){
+			this.dismiss();
+			noteView.showSave();
+		}else if(v==bSettings){
+			this.dismiss();
+			noteView.showSettings();
 		}else if(v==bClose){
 			this.dismiss();
 			noteView.setWindowAnimation(android.R.style.Animation_Dialog);

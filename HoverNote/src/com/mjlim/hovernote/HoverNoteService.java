@@ -28,6 +28,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -64,6 +65,13 @@ public class HoverNoteService extends Service {
 	public static final String REMAKE_WIDTH_KEY = "com.mjlim.hovernote.width"; // width of a remade note
 	public static final String REMAKE_HEIGHT_KEY = "com.mjlim.hovernote.height"; // height of a remade note
 	public static final String REMAKE_CURSORPOS_KEY = "com.mjlim.hovernote.cursorpos"; // location of cursor in the text field
+	public static final String REMAKE_FILENAME_KEY = "com.mjlim.hovernote.filename"; // location of cursor in the text field
+	
+	// settings
+	public static final String PREFS_NAME = "hovernoteprefs";
+	SharedPreferences settings;
+	private float defaultAlpha = 1;
+	private boolean notifOnClose = true;
 		
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -80,6 +88,10 @@ public class HoverNoteService extends Service {
 		
 		oViews = new LinkedList<HoverNoteView>();
 		
+		settings = getSharedPreferences(PREFS_NAME, 0);
+		defaultAlpha = settings.getFloat("defaultAlpha", 1);
+		notifOnClose = settings.getBoolean("notifOnClose", true);
+		
 
 		int icon = R.drawable.notificon_24;
 		CharSequence notifText = "hovernote";
@@ -87,6 +99,15 @@ public class HoverNoteService extends Service {
 		
 		updateNotification();
 			
+	}
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putFloat("defaultAlpha", defaultAlpha);
+		editor.putBoolean("notifOnClose", notifOnClose);
+		editor.commit();
 	}
 	
 	public int onStartCommand(Intent i, int flags, int startId){
@@ -101,9 +122,15 @@ public class HoverNoteService extends Service {
 				int width = i.getIntExtra(REMAKE_WIDTH_KEY, 0);
 				int height = i.getIntExtra(REMAKE_HEIGHT_KEY, 0);
 				int cursorpos = i.getIntExtra(REMAKE_CURSORPOS_KEY, 0);
+				String filename = i.getStringExtra(REMAKE_FILENAME_KEY);
+				
 				note.moveTo(x, y);
 				note.resizeTo(width, height);
 				note.getEditText().setSelection(cursorpos);
+				
+				if(filename != null){
+					note.setFilename(filename);
+				}
 	
 			}
 			else if(i.getAction().equals(INTENT_SEND_TO_NOTE)){
@@ -153,6 +180,7 @@ public class HoverNoteService extends Service {
 		
 		HoverNoteView oView = new HoverNoteView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
+		oView.setAlpha(defaultAlpha);
 		oViews.add(oView);
 		return oView;
 		
@@ -172,9 +200,12 @@ public class HoverNoteService extends Service {
 		wm.removeView(v);
 		
 		if(oViews.size() == 0){
-			// this is the last note; clear the persistent notification and create a temporary one
+			// this is the last note; clear the persistent notification. 
 			stopForeground(true);
-			nm.notify(NOTIFICATION_ID, notification);
+			// create a temporary notification if the user hasn't turned that off.
+			if(notifOnClose){
+				nm.notify(NOTIFICATION_ID, notification);
+			}
 			this.stopSelf();
 		}
 		
@@ -215,6 +246,7 @@ public class HoverNoteService extends Service {
 		nIntent.putExtra(REMAKE_HEIGHT_KEY, wp.height);
 		nIntent.putExtra(REMAKE_WIDTH_KEY, wp.width);
 		nIntent.putExtra(REMAKE_CURSORPOS_KEY, v.getEditText().getSelectionStart());
+		nIntent.putExtra(REMAKE_FILENAME_KEY, v.getFilename());
 		nIntent.setAction(INTENT_REMAKE_NOTE);
 		nIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		nIntent.setData((Uri.parse("foobar://"+SystemClock.elapsedRealtime())));
@@ -224,6 +256,17 @@ public class HoverNoteService extends Service {
 		n.setLatestEventInfo(getApplicationContext(), title, text, cIntent);
 		nm.notify((int)(System.currentTimeMillis()), n); // use current time as the unique id for the notification. casting long to int may lose some information, but for our purposes that is alright. 
 		
+	}
+
+	public void setDefaultAlpha(float newAlpha) {
+		this.defaultAlpha = newAlpha;
+	}
+	
+	public void setNotifOnClose(boolean in){
+		notifOnClose = in;
+	}
+	public boolean getNotifOnClose(){
+		return notifOnClose;
 	}
 	
 }

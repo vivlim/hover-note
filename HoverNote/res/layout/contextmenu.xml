@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="48dp"
+    android:layout_height="42dp"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layoutAnimation="@anim/slideuplayout"
     android:orientation="horizontal" >
-
+
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bCopy"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:src="@drawable/copy_white48" />
-
+
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bPaste"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:src="@drawable/paste_white48" />
 
     <com.mjlim.hovernote.MLImageButton
-        android:id="@+id/bShare"
-        android:layout_width="wrap_content"
+        android:id="@+id/bSave"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/save_white48" />
+
+    <com.mjlim.hovernote.MLImageButton
+        android:id="@+id/bShare"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:src="@drawable/share_white48" />
-
+
+    <com.mjlim.hovernote.MLImageButton
+        android:id="@+id/bSettings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/settings_white48" />
+
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bMini"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:src="@drawable/minimize_white48" />
-
+
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bClose"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:src="@drawable/close_white48" />
 
 </LinearLayout>

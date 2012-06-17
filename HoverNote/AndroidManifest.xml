@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.mjlim.hovernote"
     android:versionCode="3"
-    android:versionName="1.01" xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="auto">
+    android:versionName="1.01" android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="10"
         android:targetSdkVersion="15" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:icon="@drawable/ic_launcher"

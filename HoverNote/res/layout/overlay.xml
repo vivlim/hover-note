@@ -2,43 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
     android:orientation="vertical" >
-
-    <EditText
-        android:id="@+id/ed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_weight="1"
-        android:ems="10"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:textSize="16dip" >
 
-        <requestFocus />
-    </EditText>
-
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <EditText
+            android:id="@+id/ed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ems="10"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:textSize="16dip" >
+
+            <requestFocus />
+        </EditText>
+
+        <com.mjlim.hovernote.SaveDialog
+            android:id="@+id/saveDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+        </com.mjlim.hovernote.SaveDialog>
+
+        <com.mjlim.hovernote.SettingsDialog
+            android:id="@+id/settingsDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+        </com.mjlim.hovernote.SettingsDialog>
+
+    </ViewFlipper>
+
     <LinearLayout
         android:id="@+id/layoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
-
+
         <com.mjlim.hovernote.MLImageButton
             android:id="@+id/menuButton"
             android:layout_width="42dp"
             android:layout_height="match_parent"
             android:paddingBottom="1px"
             android:src="@drawable/menu" />
-
+
         <LinearLayout
             android:id="@+id/moveHandle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:gravity="center" >
-
+
             <ImageView
                 android:id="@+id/appIcon"
                 android:layout_width="40dp"
@@ -47,7 +68,7 @@
                 android:layout_weight="0"
                 android:padding="1px"
                 android:src="@drawable/hnicon64" />
-
+
             <TextView
                 android:id="@+id/windowTitle"
                 android:layout_width="wrap_content"
@@ -58,9 +79,8 @@
                 android:text="@string/app_name_lowercase"
                 android:textColor="#33B5E5"
                 android:textSize="18dp" />
-
         </LinearLayout>
-
+
         <ImageView
             android:id="@+id/resizeHandle"
             android:layout_width="40dp"
@@ -69,7 +89,6 @@
             android:padding="1px"
             android:paddingBottom="4px"
             android:src="@drawable/resizehandle" />
-
     </LinearLayout>
 
 </LinearLayout>
