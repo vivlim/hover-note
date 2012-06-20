@@ -14,15 +14,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <CheckBox
+                android:id="@+id/chkNotifClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/notifAfterClose" />
+
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="3dp"
+                android:paddingLeft="5dp"
                 android:text="@string/windowTransparency" />
-
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:padding="3dp" >
 
                 <SeekBar
                     android:id="@+id/seekTransparencyBar"
@@ -40,11 +50,6 @@
 
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/chkNotifClose"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/notifAfterClose" />
         </LinearLayout>
 
     </ScrollView>

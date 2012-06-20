@@ -48,13 +48,13 @@ public final class R {
         public static final int appIcon=0x7f09000e;
         public static final int bClose=0x7f090006;
         public static final int bCopy=0x7f090000;
-        public static final int bDefaultTransparency=0x7f090016;
+        public static final int bDefaultTransparency=0x7f090017;
         public static final int bMini=0x7f090005;
         public static final int bPaste=0x7f090001;
         public static final int bSave=0x7f090002;
         public static final int bSettings=0x7f090004;
         public static final int bShare=0x7f090003;
-        public static final int chkNotifClose=0x7f090017;
+        public static final int chkNotifClose=0x7f090015;
         public static final int close=0x7f090019;
         public static final int copy=0x7f090018;
         public static final int ed=0x7f090008;
@@ -64,7 +64,7 @@ public final class R {
         public static final int resizeHandle=0x7f090010;
         public static final int saveDialog=0x7f090009;
         public static final int scrollView1=0x7f090013;
-        public static final int seekTransparencyBar=0x7f090015;
+        public static final int seekTransparencyBar=0x7f090016;
         public static final int settingsDialog=0x7f09000a;
         public static final int textView1=0x7f090014;
         public static final int viewFlipper=0x7f090007;

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 import android.view.View.OnClickListener;
@@ -19,7 +20,7 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 	
 	HoverNoteView note;
 	EditText saveToPath;
-	Button saveButton, browseButton;
+	ImageView saveButton;
 
 	public SaveDialog(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -27,7 +28,7 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 		inflater.inflate(R.layout.savedialog, this);
 		
 		saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
-		saveButton = (Button)findViewById(R.id.SDsaveButton);
+		saveButton = (ImageView)findViewById(R.id.SDsaveButton);
 //		browseButton = (Button)findViewById(R.id.SDbrowseButton);
 		
 		saveButton.setOnClickListener(this);
