@@ -9,15 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1" >
-
+
         <EditText
             android:id="@+id/ed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/edit_text_holo_dark"
             android:ems="10"
             android:gravity="top"
             android:inputType="textMultiLine"
+            android:textColor="@color/textColor"
             android:textSize="16dip" >
 
             <requestFocus />

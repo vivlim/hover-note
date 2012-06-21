@@ -20,6 +20,7 @@ public final class R {
     public static final class color {
         public static final int buttonglowactive=0x7f050001;
         public static final int buttonglowinactive=0x7f050000;
+        public static final int textColor=0x7f050002;
     }
     public static final class drawable {
         public static final int activerectangle=0x7f020000;
@@ -28,19 +29,39 @@ public final class R {
         public static final int close_white48=0x7f020003;
         public static final int copy_blue32=0x7f020004;
         public static final int copy_white48=0x7f020005;
-        public static final int hnicon64=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
-        public static final int inactiverectangle=0x7f020008;
-        public static final int menu=0x7f020009;
-        public static final int mini_blue32=0x7f02000a;
-        public static final int minimize_white48=0x7f02000b;
-        public static final int notificon_24=0x7f02000c;
-        public static final int paste_blue32=0x7f02000d;
-        public static final int paste_white48=0x7f02000e;
-        public static final int resizehandle=0x7f02000f;
-        public static final int save_white48=0x7f020010;
-        public static final int settings_white48=0x7f020011;
-        public static final int share_white48=0x7f020012;
+        public static final int edit_text_holo_dark=0x7f020006;
+        public static final int hnicon64=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int inactiverectangle=0x7f020009;
+        public static final int menu=0x7f02000a;
+        public static final int mini_blue32=0x7f02000b;
+        public static final int minimize_white48=0x7f02000c;
+        public static final int notificon_24=0x7f02000d;
+        public static final int paste_blue32=0x7f02000e;
+        public static final int paste_white48=0x7f02000f;
+        public static final int resizehandle=0x7f020010;
+        public static final int save_white48=0x7f020011;
+        public static final int settings_white48=0x7f020012;
+        public static final int share_white48=0x7f020013;
+        public static final int textfield_activated_holo_dark=0x7f020014;
+        public static final int textfield_bg_activated_holo_dark=0x7f020015;
+        public static final int textfield_bg_default_holo_dark=0x7f020016;
+        public static final int textfield_bg_disabled_focused_holo_dark=0x7f020017;
+        public static final int textfield_bg_disabled_holo_dark=0x7f020018;
+        public static final int textfield_bg_focused_holo_dark=0x7f020019;
+        public static final int textfield_default_holo_dark=0x7f02001a;
+        public static final int textfield_disabled_focused_holo_dark=0x7f02001b;
+        public static final int textfield_disabled_holo_dark=0x7f02001c;
+        public static final int textfield_focused_holo_dark=0x7f02001d;
+        public static final int textfield_multiline_activated_holo_dark=0x7f02001e;
+        public static final int textfield_multiline_default_holo_dark=0x7f02001f;
+        public static final int textfield_multiline_disabled_focused_holo_dark=0x7f020020;
+        public static final int textfield_multiline_disabled_holo_dark=0x7f020021;
+        public static final int textfield_multiline_focused_holo_dark=0x7f020022;
+        public static final int textfield_search_default_holo_dark=0x7f020023;
+        public static final int textfield_search_right_default_holo_dark=0x7f020024;
+        public static final int textfield_search_right_selected_holo_dark=0x7f020025;
+        public static final int textfield_search_selected_holo_dark=0x7f020026;
     }
     public static final class id {
         public static final int SDsaveButton=0x7f090012;
