@@ -448,6 +448,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		
 		intent.putExtra(Intent.EXTRA_TEXT, this.getText());
+		intent.putExtra(Intent.EXTRA_SUBJECT, ""); // hunch: might fix problems with sharing to gnotes 
+		
 		Intent chooser = Intent.createChooser(intent, "How do you want to share this note?");
 		chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		
