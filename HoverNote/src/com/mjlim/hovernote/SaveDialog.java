@@ -21,9 +21,13 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 	HoverNoteView note;
 	EditText saveToPath;
 	ImageView saveButton;
+	Button browseButton;
+	
+	Context context;
 
 	public SaveDialog(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.savedialog, this);
 		
@@ -31,9 +35,10 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 
 			saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
 			saveButton = (ImageView)findViewById(R.id.SDsaveButton);
-	//		browseButton = (Button)findViewById(R.id.SDbrowseButton);
+			browseButton = (Button)findViewById(R.id.SDbrowseButton);
 			
 			saveButton.setOnClickListener(this);
+			browseButton.setOnClickListener(this);
 		}
 	}
 
@@ -41,6 +46,8 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 		if(v==saveButton){
 			note.saveFile(saveToPath.getText().toString());
 			note.leaveDialogs();
+		}else if (v==browseButton){
+			new FilePickerWindow(context, note, note.getWm(), note.getWindowParams().x+3, note.getWindowParams().y+3);
 		}
 	}
 	

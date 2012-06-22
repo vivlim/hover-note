@@ -35,42 +35,26 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class contextmenu extends FloatingModalWindow implements OnClickListener{
+public class FilePickerWindow extends FloatingModalWindow implements OnClickListener{
 
 	ImageView bPaste, bCopy, bClose, bMini, bShare, bSave, bSettings;
 	
-	public contextmenu(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
+	public FilePickerWindow(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context, ov, wm, x, y);
-		
+
 		LayoutInflater inflater = LayoutInflater.from(context);
-		inflater.inflate(R.layout.contextmenu, this);
-		
-		// Retrieve UI elements
-		bCopy = (ImageView)findViewById(R.id.bCopy);
-		bClose = (ImageView)findViewById(R.id.bClose);
-		bMini = (ImageView)findViewById(R.id.bMini);
-		bPaste = (ImageView)findViewById(R.id.bPaste);
-		bShare = (ImageView)findViewById(R.id.bShare);
-		bSave = (ImageView)findViewById(R.id.bSave);
-		bSettings = (ImageView)findViewById(R.id.bSettings);
+		inflater.inflate(R.layout.filepickerwindow, this);
 		
 		// Assign listeners
-	
-		// Set onclick for all of the buttons
-		bCopy.setOnClickListener(this);
-		bClose.setOnClickListener(this);
-		bMini.setOnClickListener(this);
-		bPaste.setOnClickListener(this);
-		bShare.setOnClickListener(this);
-		bSave.setOnClickListener(this);
-		bSettings.setOnClickListener(this);
+		this.setOnTouchListener(this);
+		this.setOnKeyListener(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams); // make it visible
 		this.requestFocus();	
+		
 	}
-
-
+	
 	public void onClick(View v) {
 		if(v==bMini){
 			this.dismiss();
@@ -98,9 +82,7 @@ public class contextmenu extends FloatingModalWindow implements OnClickListener{
 		
 	}
 
-	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		// needs to also close when hitting menu
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			switch(keyCode){
 			case KeyEvent.KEYCODE_BACK:

@@ -183,6 +183,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		
 	}
 	
+	public WindowManager getWm() {
+		return wm;
+	}
+
 	public void focus(){		
 		this.focused = true;
 		this.setBackgroundDrawable(drActiveRect); // visual cue
@@ -214,6 +218,13 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
     	
+	}
+	
+	public void unfocusForPopup(){
+		// unfocuses and makes the window unfocusable. needs to be made focusable by the window it spawns. DON'T CALL THIS ON ITS OWN!
+		unfocus();
+		winparams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // required to block taps that close the context menu from activating apps below this one
+    	wm.updateViewLayout(this, winparams);
 	}
 	
 	public void close(){
@@ -351,9 +362,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		if(viewFlipper.getDisplayedChild() != 0){
 			viewFlipper.setDisplayedChild(0);
 		}
-		unfocus();
-		winparams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; // required to block taps that close the context menu from activating apps below this one
-    	wm.updateViewLayout(this, winparams);
+//		unfocusForPopup();
 		new contextmenu(context, this, wm, x, y+8);
 		
 	}
