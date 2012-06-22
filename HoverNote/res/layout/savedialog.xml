@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
+
         <EditText
             android:id="@+id/SDsaveToPath"
             android:layout_width="wrap_content"
@@ -15,34 +15,24 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/filePathHint"
-            android:text="/sdcard/" />
-
-   		<com.mjlim.hovernote.MLImageButton
-   		    android:id="@+id/SDsaveButton"
-   		    android:layout_width="wrap_content"
-   		    android:layout_height="wrap_content"
-   		    android:layout_weight="0"
-   		    android:src="@drawable/save_white48" />
+            android:text="/sdcard/" >
 
+            <requestFocus />
+        </EditText>
+
+        <com.mjlim.hovernote.MLImageButton
+            android:id="@+id/SDsaveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:src="@drawable/save_white48" />
     </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView1"
+
+    <com.mjlim.hovernote.FilePicker
+        android:id="@+id/filePicker1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="6dp"
-                android:text="@string/saveTxt" />
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+    </com.mjlim.hovernote.FilePicker>
 
 </LinearLayout>

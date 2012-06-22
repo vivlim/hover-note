@@ -27,12 +27,14 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 		LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.savedialog, this);
 		
-		saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
-		saveButton = (ImageView)findViewById(R.id.SDsaveButton);
-//		browseButton = (Button)findViewById(R.id.SDbrowseButton);
-		
-		saveButton.setOnClickListener(this);
-//		browseButton.setOnClickListener(this);
+		if(!this.isInEditMode()){
+
+			saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
+			saveButton = (ImageView)findViewById(R.id.SDsaveButton);
+	//		browseButton = (Button)findViewById(R.id.SDbrowseButton);
+			
+			saveButton.setOnClickListener(this);
+		}
 	}
 
 	public void onClick(View v) {

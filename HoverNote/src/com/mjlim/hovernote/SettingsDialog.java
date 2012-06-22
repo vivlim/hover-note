@@ -32,15 +32,18 @@ public class SettingsDialog extends LinearLayout implements OnSeekBarChangeListe
 		LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.settingsdialog, this);
 		
-		seekTransparencyBar = (SeekBar)findViewById(R.id.seekTransparencyBar);
-		bDefaultTransparency = (Button)findViewById(R.id.bDefaultTransparency);
-		chkNotifClose = (CheckBox)findViewById(R.id.chkNotifClose);
-		
-		seekTransparencyBar.setOnSeekBarChangeListener(this);
-		bDefaultTransparency.setOnClickListener(this);
-		chkNotifClose.setOnCheckedChangeListener(this);
-		
-		this.setFocusableInTouchMode(true); // necessary, or we can't handle the back key
+		if(!this.isInEditMode()){
+	
+			seekTransparencyBar = (SeekBar)findViewById(R.id.seekTransparencyBar);
+			bDefaultTransparency = (Button)findViewById(R.id.bDefaultTransparency);
+			chkNotifClose = (CheckBox)findViewById(R.id.chkNotifClose);
+			
+			seekTransparencyBar.setOnSeekBarChangeListener(this);
+			bDefaultTransparency.setOnClickListener(this);
+			chkNotifClose.setOnCheckedChangeListener(this);
+			
+			this.setFocusableInTouchMode(true); // necessary, or we can't handle the back key
+		}
 
 	}
 

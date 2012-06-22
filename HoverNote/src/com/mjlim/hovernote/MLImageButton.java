@@ -32,21 +32,24 @@ public class MLImageButton extends ImageView {
 	TransitionDrawable t;
 	public MLImageButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
-		t = (TransitionDrawable)this.getBackground();
-		// TODO Auto-generated constructor stub
+		if(!this.isInEditMode()){
+			this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
+			t = (TransitionDrawable)this.getBackground();
+		}
 	}
 	public MLImageButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
-		t = (TransitionDrawable)this.getBackground();
-		// TODO Auto-generated constructor stub
+		if(!this.isInEditMode()){
+			this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
+			t = (TransitionDrawable)this.getBackground();
+		}
 	}
 	public MLImageButton(Context context) {
 		super(context);
-		this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
-		t = (TransitionDrawable)this.getBackground();
-		// TODO Auto-generated constructor stub
+		if(!this.isInEditMode()){
+			this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonglow));
+			t = (TransitionDrawable)this.getBackground();
+		}
 	}
 
 	@Override
