@@ -38,16 +38,22 @@ import android.widget.LinearLayout;
 public class FilePickerWindow extends FloatingModalWindow implements OnClickListener{
 
 	ImageView bPaste, bCopy, bClose, bMini, bShare, bSave, bSettings;
+	FilePicker filePicker;
 	
 	public FilePickerWindow(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context, ov, wm, x, y);
 
 		LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.filepickerwindow, this);
+
+		filePicker = (FilePicker)findViewById(R.id.filePicker);
 		
 		// Assign listeners
 		this.setOnTouchListener(this);
 		this.setOnKeyListener(this);
+		
+		filePicker.setOnKeyListener(this);
+		filePicker.setFilePickerWindow(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams); // make it visible
@@ -56,6 +62,7 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 	}
 	
 	public void onClick(View v) {
+		/*
 		if(v==bMini){
 			this.dismiss();
 			noteView.minimize();
@@ -78,7 +85,7 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 			this.dismiss();
 			noteView.setWindowAnimation(android.R.style.Animation_Dialog);
 			noteView.close();
-		}
+		}*/
 		
 	}
 
@@ -86,7 +93,6 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			switch(keyCode){
 			case KeyEvent.KEYCODE_BACK:
-			case KeyEvent.KEYCODE_MENU:
 				this.dismiss();
 				return true;
 			}

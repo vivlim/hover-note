@@ -1,12 +1,23 @@
 package com.mjlim.hovernote;
 
 public class FilePickerOption implements Comparable<FilePickerOption>{
-	private String name, data, path;
 	
-	public FilePickerOption(String name, String data, String path){
+	public enum FileType {
+		FOLDER, FILE
+	}
+	
+	private String name, data, path;
+	private FileType type;
+	
+	public FilePickerOption(String name, String data, FileType type, String path){
 		this.name = name;
 		this.data = data;
 		this.path = path;
+		this.type = type;
+	}
+
+	public FileType getType() {
+		return type;
 	}
 
 	public String getName() {

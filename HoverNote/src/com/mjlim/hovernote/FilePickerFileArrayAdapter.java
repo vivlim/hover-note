@@ -2,11 +2,14 @@ package com.mjlim.hovernote;
 
 import java.util.List;
 
+import com.mjlim.hovernote.FilePickerOption.FileType;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -40,11 +43,21 @@ public class FilePickerFileArrayAdapter extends ArrayAdapter {
 			TextView title = (TextView)v.findViewById(R.id.fpiTitle);
 			TextView detail = (TextView)v.findViewById(R.id.fpiDetail);
 			
+			ImageView icon = (ImageView)v.findViewById(R.id.fpiIcon);
+			
 			if(title != null){
 				title.setText(o.getName());
 			}
 			if(detail != null){
 				detail.setText(o.getData());
+			}
+			
+			if(icon != null){
+				if(o.getType() == FilePickerOption.FileType.FILE){
+					icon.setImageResource(R.drawable.fileicon);
+				}else if(o.getType() == FilePickerOption.FileType.FOLDER){
+					icon.setImageResource(R.drawable.foldericon);
+				}
 			}
 		}
 		

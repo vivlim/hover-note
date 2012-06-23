@@ -3,12 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/pathView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PATH" />
+        android:text="PATH"
+        android:textSize="8pt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.mjlim.hovernote.MLImageButton
+            android:id="@+id/upLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/upfolder_white48" />
+
+        <EditText
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/filter"
+            android:singleLine="true" >
+
+            <requestFocus />
+        </EditText>
+
+        <com.mjlim.hovernote.MLImageButton
+            android:id="@+id/clearFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close_white48" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/fileList"

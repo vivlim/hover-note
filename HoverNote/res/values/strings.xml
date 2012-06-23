@@ -21,5 +21,6 @@
         <string name="saveTxt">Please enter the full path you\'d like to save to above. For example, /sdcard/mynote.txt. To open files, use your favourite file manager (or dropbox); hovernote should appear on the list of apps. A file browser will be implemented in a future version-- I just wanted to get loading and saving .txt files into your hands sooner.</string>
         <string name="browse">Browse</string>
         <string name="notifAfterClose">Keep notification after closing</string>
+        <string name="filter">Filter</string>
 
 </resources>

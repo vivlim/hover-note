@@ -1,19 +1,14 @@
 package com.mjlim.hovernote;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
+
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ViewFlipper;
 import android.view.View.OnClickListener;
 
 public class SaveDialog extends LinearLayout implements OnClickListener{
@@ -50,6 +45,7 @@ public class SaveDialog extends LinearLayout implements OnClickListener{
 			new FilePickerWindow(context, note, note.getWm(), note.getWindowParams().x+3, note.getWindowParams().y+3);
 		}
 	}
+	
 	
 	public void setOnTouchListener(OnTouchListener v){
 		super.setOnTouchListener(v);

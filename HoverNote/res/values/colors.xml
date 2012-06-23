@@ -3,5 +3,6 @@
     <color name="buttonglowinactive">#00FFFFFF</color>
     <color name="buttonglowactive">#FF33B5E5</color>
     <color name="textColor">#FFFFFF</color>
+    <color name="demphasizeTextColor">#888888</color>
     
 </resources>
