@@ -49,7 +49,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 
 
-public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener{
+public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener, OnDialogClosedListener{
 	
 	private EditText ed;
 	
@@ -167,6 +167,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		
 		saveDialog.setOnKeyListener(this);
 		settingsDialog.setOnKeyListener(this);
+		
+		saveDialog.setOnDialogClosedListener(this); // When the dialog says it is closed, call this view to switch back to the note.
 		
 		viewFlipper.setInAnimation(AnimationUtils.loadAnimation(context,R.anim.slideup));
 		viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(context,R.anim.slidedown));
@@ -565,6 +567,11 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		if(viewFlipper.getDisplayedChild() != 0){
 			viewFlipper.setDisplayedChild(0);
 		}
+	}
+
+	public void onDialogClosed() {
+		// jump back to the note
+		this.leaveDialogs();
 	}
 	
 

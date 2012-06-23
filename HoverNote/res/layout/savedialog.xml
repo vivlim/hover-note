@@ -26,13 +26,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="Browse" />
-
+        
+        <com.mjlim.hovernote.MLImageButton
+            android:id="@+id/SDopenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:src="@drawable/openaction" />
         <com.mjlim.hovernote.MLImageButton
             android:id="@+id/SDsaveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:src="@drawable/save_white48" />
+            android:src="@drawable/saveaction" />
     </LinearLayout>
 
 </LinearLayout>

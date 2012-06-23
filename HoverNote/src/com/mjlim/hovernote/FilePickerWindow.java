@@ -35,10 +35,12 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class FilePickerWindow extends FloatingModalWindow implements OnClickListener{
+public class FilePickerWindow extends FloatingModalWindow implements OnKeyListener, OnFileSelectedListener{
 
 	ImageView bPaste, bCopy, bClose, bMini, bShare, bSave, bSettings;
 	FilePicker filePicker;
+	
+	OnFileSelectedListener fileSelectedListener;
 	
 	public FilePickerWindow(Context context, HoverNoteView ov, WindowManager wm, int x, int y) {
 		super(context, ov, wm, x, y);
@@ -53,7 +55,6 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 		this.setOnKeyListener(this);
 		
 		filePicker.setOnKeyListener(this);
-		filePicker.setFilePickerWindow(this);
 		
 		this.invalidate();
 		wm.addView(this, winparams); // make it visible
@@ -61,34 +62,6 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 		
 	}
 	
-	public void onClick(View v) {
-		/*
-		if(v==bMini){
-			this.dismiss();
-			noteView.minimize();
-		}else if(v==bCopy){
-			this.dismiss();
-			noteView.copy();
-		}else if(v==bPaste){
-			this.dismiss();
-			noteView.paste();
-		}else if(v==bShare){
-			this.dismiss();
-			noteView.share();
-		}else if(v==bSave){
-			this.dismiss();
-			noteView.showSave();
-		}else if(v==bSettings){
-			this.dismiss();
-			noteView.showSettings();
-		}else if(v==bClose){
-			this.dismiss();
-			noteView.setWindowAnimation(android.R.style.Animation_Dialog);
-			noteView.close();
-		}*/
-		
-	}
-
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if(event.getAction() == KeyEvent.ACTION_UP){
 			switch(keyCode){
@@ -98,6 +71,20 @@ public class FilePickerWindow extends FloatingModalWindow implements OnClickList
 			}
 		}
 		return false;
+	}
+
+	public void setFileSelectedListener(OnFileSelectedListener o) {
+		// intercept this call and set the child filepicker to have this as the listener.
+		// the idea being that FilePickerWindow receives the callback, will close itself, and passes the callback on.
+		filePicker.setFileSelectedListener(this);
+		this.fileSelectedListener = o;
+	}
+
+	public void onFileSelected(FilePickerOption o) {
+		// pass it on and close the window
+		this.fileSelectedListener.onFileSelected(o);
+		this.dismiss();
+		
 	}
 	
 

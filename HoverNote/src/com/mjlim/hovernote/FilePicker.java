@@ -37,7 +37,8 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 	Context c;
 	
 	File currentFile;
-	FilePickerWindow fpWindow = null;
+	
+	OnFileSelectedListener onSelectedListener;
 	
 	private FilePickerFileArrayAdapter adapter;
 	
@@ -119,6 +120,7 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 			openDirectory(new File(o.getPath()));
 		}else if (o.getType() == FilePickerOption.FileType.FILE){
 			// open the file
+			onSelectedListener.onFileSelected(o); // issue callback
 
 		}
 	}
@@ -147,15 +149,8 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 		fileList.setOnKeyListener(okl);
 	}
 
-	private void openFile(FilePickerOption o){
-    	Intent i = new Intent(c.getApplicationContext(), HoverNoteService.class);
-    	i.setAction(HoverNoteService.INTENT_OPEN_NOTE_FILE);
-    	i.setDataAndType(Uri.fromFile(new File(o.getPath())), "text/plain"); // data and type too
-    	c.getApplicationContext().startService(i); // pass it on
-	}
-	
-	public void setFilePickerWindow(FilePickerWindow fpWindow){
-		this.fpWindow = fpWindow;
+	public void setFileSelectedListener(OnFileSelectedListener o) {
+		onSelectedListener = o;	
 	}
 
 }
