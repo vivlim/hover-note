@@ -17,12 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.view.View.OnClickListener;
 
-public class SaveDialog extends LinearLayout implements OnClickListener, OnFileSelectedListener{
+public class SaveDialog extends LinearLayout implements OnClickListener{
 	
 	HoverNoteView note;
-	EditText saveToPath;
+//	EditText saveToPath;
 	ImageView saveButton, openButton;
-	Button browseButton;
+//	Button browseButton;
+	Button saveOver;
+	
+	String openFilename=null;
 	
 	Context context;
 	
@@ -38,73 +41,103 @@ public class SaveDialog extends LinearLayout implements OnClickListener, OnFileS
 		
 		if(!this.isInEditMode()){
 
-			saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
+//			saveToPath = (EditText)findViewById(R.id.SDsaveToPath);
 			saveButton = (ImageView)findViewById(R.id.SDsaveButton);
 			openButton = (ImageView)findViewById(R.id.SDopenButton);
-			browseButton = (Button)findViewById(R.id.SDbrowseButton);
+			saveOver = (Button)findViewById(R.id.saveOver);
+//			browseButton = (Button)findViewById(R.id.SDbrowseButton);
 			
-			saveButton.setOnClickListener(this);
-			openButton.setOnClickListener(this);
-			browseButton.setOnClickListener(this);
+			this.setOnClickListener(this);
+			
+			saveOver.setVisibility(GONE);
+			
+			this.setFocusableInTouchMode(true); // necessary, or we can't handle the back key
+
 			
 			SharedPreferences settings = context.getApplicationContext().getSharedPreferences(HoverNoteService.PREFS_NAME, 0);
 			defaultSaveLocation = settings.getString("defaultSaveLocation", "/sdcard/");
-			saveToPath.setText(defaultSaveLocation);
 		}
 	}
 
 	public void onClick(View v) {
-		if(v==saveButton){
-			note.saveFile(saveToPath.getText().toString());
-			onCloseListener.onDialogClosed();
-		}else if(v== openButton){
+		String saveToPath;
+		if(note.getFilename() == null){
+			saveToPath = defaultSaveLocation;
+		}else{
 			try{
-				openFile(saveToPath.getText().toString());
-				onCloseListener.onDialogClosed();
-				saveToPath.setText(defaultSaveLocation); // reset
-			}catch (Exception e){
-				Toast.makeText(context, "Sorry, there was an error opening the file.", Toast.LENGTH_SHORT).show();
+				File f = new File(note.getFilename());
+				if(f.isFile()){
+					// this is a file, so get its parent (a directory)
+					saveToPath = f.getParent();
+				}else{
+					// this isn't a file, it's a directory.
+					saveToPath = f.getPath();
+				}
 			}
-		}else if (v==browseButton){
-			FilePickerWindow fpw = new FilePickerWindow(context, note, note.getWm(), note.getWindowParams().x+3, note.getWindowParams().y+3);
-			fpw.setFileSelectedListener(this);
+			catch(Exception e){
+				// something failed so just default to default save location
+				saveToPath = defaultSaveLocation;
+			}
+		}
+		if(v==saveButton){
+			SaveFileWindow sfw = new SaveFileWindow(context, this, saveToPath, note, note.getWm(), note.getWindowParams().x+3, note.getWindowParams().y+3);
+		}else if(v== openButton){
+			OpenFileWindow ofw = new OpenFileWindow(context, this, saveToPath, note, note.getWm(), note.getWindowParams().x+3, note.getWindowParams().y+3);
+		}else if(v == saveOver){
+			saveFile(openFilename);
 		}
 	}
 	
 	
 	public void setOnTouchListener(OnTouchListener v){
 		super.setOnTouchListener(v);
-		saveToPath.setOnTouchListener(v);
 		saveButton.setOnTouchListener(v);
+		openButton.setOnTouchListener(v);
+		saveOver.setOnTouchListener(v);
 	}
 	
 	public void setOnKeyListener(OnKeyListener v){
 		super.setOnKeyListener(v);
-		saveToPath.setOnKeyListener(v);
 		saveButton.setOnKeyListener(v);
+		openButton.setOnKeyListener(v);
+		saveOver.setOnKeyListener(v);
 	}
 	
-	public void setFilename(String f){
-		saveToPath.setText(f);
+	public void setOnClickListener(OnClickListener v){
+		super.setOnClickListener(v);
+		saveButton.setOnClickListener(v);
+		openButton.setOnClickListener(v);
+		saveOver.setOnClickListener(v);
+	}
+	
+	public void setFilename(String path){
+//		saveToPath.setText(f);
+		openFilename = path;
+		String fileName = new File(path).getName().toString();
+		saveOver.setText("Save over " + fileName);
+		saveOver.setVisibility(VISIBLE);
+		
 	}
 	public void setNote(HoverNoteView n){
 		this.note = n;
-	}
-
-	public void onFileSelected(FilePickerOption o) {
-		this.saveToPath.setText(o.getPath());
-		
 	}
 	
 	public void setOnDialogClosedListener(OnDialogClosedListener o){
 		this.onCloseListener = o;
 	}
 	
-	private void openFile(String path){
+	public void openFile(String path){
+		onCloseListener.onDialogClosed(); // close dialog
     	Intent i = new Intent(context.getApplicationContext(), HoverNoteService.class);
     	i.setAction(HoverNoteService.INTENT_OPEN_NOTE_FILE);
     	i.setDataAndType(Uri.fromFile(new File(path)), "text/plain"); // data and type too
     	context.getApplicationContext().startService(i); // pass it on
+    	
+	}
+	
+	public void saveFile(String path){
+		note.saveFile(path);
+		onCloseListener.onDialogClosed(); // close dialog
 	}
 
 }

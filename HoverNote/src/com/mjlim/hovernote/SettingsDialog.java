@@ -23,7 +23,7 @@ public class SettingsDialog extends LinearLayout implements OnSeekBarChangeListe
 	
 	SeekBar seekTransparencyBar;
 	Button bDefaultTransparency;
-	CheckBox chkNotifClose;
+	CheckBox chkNotifClose, chkAutosave;
 	
 	HoverNoteView note = null;
 
@@ -37,10 +37,12 @@ public class SettingsDialog extends LinearLayout implements OnSeekBarChangeListe
 			seekTransparencyBar = (SeekBar)findViewById(R.id.seekTransparencyBar);
 			bDefaultTransparency = (Button)findViewById(R.id.bDefaultTransparency);
 			chkNotifClose = (CheckBox)findViewById(R.id.chkNotifClose);
+			chkAutosave = (CheckBox)findViewById(R.id.chkAutosave);
 			
 			seekTransparencyBar.setOnSeekBarChangeListener(this);
 			bDefaultTransparency.setOnClickListener(this);
 			chkNotifClose.setOnCheckedChangeListener(this);
+			chkAutosave.setOnCheckedChangeListener(this);
 			
 			this.setFocusableInTouchMode(true); // necessary, or we can't handle the back key
 		}
@@ -83,6 +85,7 @@ public class SettingsDialog extends LinearLayout implements OnSeekBarChangeListe
 		seekTransparencyBar.setProgress(alphaToProgress(n.getWindowParams().alpha));
 		
 		chkNotifClose.setChecked(note.getService().getNotifOnClose());
+		chkAutosave.setChecked(note.getService().getAutosave());
 	}
 
 
@@ -103,6 +106,8 @@ public class SettingsDialog extends LinearLayout implements OnSeekBarChangeListe
 	public void onCheckedChanged(CompoundButton v, boolean value) {
 		if(v==chkNotifClose){
 			note.getService().setNotifOnClose(value);
+		}else if(v== chkAutosave){
+			note.getService().setAutosave(value);
 		}
 		
 	}

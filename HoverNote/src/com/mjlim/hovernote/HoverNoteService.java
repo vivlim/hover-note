@@ -91,6 +91,7 @@ public class HoverNoteService extends Service {
 		settings = getSharedPreferences(PREFS_NAME, 0);
 		defaultAlpha = settings.getFloat("defaultAlpha", 1);
 		notifOnClose = settings.getBoolean("notifOnClose", true);
+		HoverNoteView.autosaveOnUnfocus = settings.getBoolean("autosaveOnUnfocus", false);
 		
 
 		int icon = R.drawable.notificon_24;
@@ -107,6 +108,7 @@ public class HoverNoteService extends Service {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putFloat("defaultAlpha", defaultAlpha);
 		editor.putBoolean("notifOnClose", notifOnClose);
+		editor.putBoolean("autosaveOnUnfocus", HoverNoteView.autosaveOnUnfocus);
 		editor.commit();
 	}
 	
@@ -267,6 +269,13 @@ public class HoverNoteService extends Service {
 	}
 	public boolean getNotifOnClose(){
 		return notifOnClose;
+	}
+	
+	public void setAutosave(boolean in){
+		HoverNoteView.autosaveOnUnfocus= true;
+	}
+	public boolean getAutosave(){
+		return HoverNoteView.autosaveOnUnfocus;
 	}
 	
 }

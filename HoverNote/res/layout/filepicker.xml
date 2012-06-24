@@ -3,35 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/pathView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/toolbar"
         android:text="PATH"
         android:textSize="8pt" />
-
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="@drawable/toolbar" >
 
         <com.mjlim.hovernote.MLImageButton
             android:id="@+id/upLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/upfolder_white48" />
-
+
         <EditText
             android:id="@+id/filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:ems="10"
             android:hint="@string/filter"
-            android:singleLine="true" >
-
-            <requestFocus />
-        </EditText>
+            android:singleLine="true" />
 
         <com.mjlim.hovernote.MLImageButton
             android:id="@+id/clearFilter"

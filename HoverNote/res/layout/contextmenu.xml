@@ -20,6 +20,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@drawable/paste_white48" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:src="@drawable/buttonseparator" />
 
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bSave"
@@ -34,6 +41,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@drawable/share_white48" />
+
+    <ImageView
+        android:id="@+id/ImageView01"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:src="@drawable/buttonseparator" />
 
     <com.mjlim.hovernote.MLImageButton
         android:id="@+id/bSettings"

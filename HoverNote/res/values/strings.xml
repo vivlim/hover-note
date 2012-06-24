@@ -22,5 +22,11 @@
         <string name="browse">Browse</string>
         <string name="notifAfterClose">Keep notification after closing</string>
         <string name="filter">Filter</string>
+        <string name="storage">Phone Storage</string>
+        <string name="save">Save</string>
+        <string name="filename">Filename</string>
+        <string name="open">Open</string>
+        <string name="saveDialogTitle">Locations:</string>
+        <string name="autosaveUnfocus">Autosave when unfocusing a note</string>
 
 </resources>

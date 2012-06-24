@@ -27,10 +27,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.ClipboardManager;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -50,7 +52,9 @@ import android.view.animation.AnimationUtils;
 
 
 public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouchListener, OnClickListener, OnDialogClosedListener{
-	
+	// global configuration
+	public static boolean autosaveOnUnfocus = false;
+	// end global configuration
 	private EditText ed;
 	
 	private LinearLayout layoutButtons;
@@ -86,10 +90,10 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	private Drawable drInactiveRect;
 	
 	// arbitrarily selected minimum sizes
-	final private int MIN_WIDTH = 225;
-	final private int MIN_HEIGHT = 80;
-	final private int INITIAL_HEIGHT = 150;
-	final private int INITIAL_WIDTH_TABLET = 400;
+	private int MIN_WIDTH = 225;
+	private int MIN_HEIGHT = 80;
+	private int INITIAL_HEIGHT = 150;
+	private int INITIAL_WIDTH_TABLET = 400;
 	
 	private int MAX_HEIGHT;
 	private int MAX_WIDTH;
@@ -108,6 +112,14 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		
 		LayoutInflater inflater = LayoutInflater.from(context);
 		inflater.inflate(R.layout.overlay, this);
+		
+		// Begin: convert dp to px
+		Resources r = context.getResources();
+		MIN_WIDTH = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MIN_WIDTH, r.getDisplayMetrics());
+		MIN_HEIGHT= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MIN_HEIGHT, r.getDisplayMetrics());
+		INITIAL_HEIGHT= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, INITIAL_HEIGHT, r.getDisplayMetrics());
+		INITIAL_WIDTH_TABLET= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, INITIAL_WIDTH_TABLET, r.getDisplayMetrics());
+		// End: convert dp to px
 		
 		this.wm = wm;
 		
@@ -220,6 +232,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
     	wm.updateViewLayout(this, winparams);
     	this.invalidate();//redraw
     	
+    	this.doAutosave();
 	}
 	
 	public void unfocusForPopup(){
@@ -508,6 +521,8 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		this.filename = fn;
 		this.isFile = true;
 		windowTitle.setText(fn);
+		saveDialog.setFilename(fn);
+		
 		FilenameAndContent info = new FilenameAndContent();
 		info.filename = fn;
 		info.content = ed.getText().toString();
@@ -539,7 +554,9 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		}
 		
 		protected void onPostExecute(String resultMsg){
-			Toast.makeText(context, resultMsg, Toast.LENGTH_SHORT).show();
+			if(!resultMsg.endsWith(".hnautosave")){ // don't print message when saving to autosave files
+				Toast.makeText(context, resultMsg, Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 	
@@ -551,6 +568,7 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 	}
 	
 	public void showSettings(){
+		settingsDialog.setNote(this); // refresh any of the settings which may have changed globally
 		viewFlipper.setDisplayedChild(2);
 	}
 
@@ -574,7 +592,26 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		this.leaveDialogs();
 	}
 	
-
+	public void doAutosave(){
+		// see if we have autosave enabled, and do it
+    	if((autosaveOnUnfocus) && (this.isFile)){
+    		try{ // duplicating some code below because I don't want to update anywhere else with the autosave file's info. should refactor this into another function, but later
+    			if(this.filename.endsWith(".hnautosave")){
+    				FilenameAndContent info = new FilenameAndContent();
+    				info.filename = this.filename;
+    				info.content = ed.getText().toString();
+    				new SaveFilesTask().execute(info);
+    			}else{
+    				FilenameAndContent info = new FilenameAndContent();
+    				info.filename = this.filename + ".hnautosave";
+    				info.content = ed.getText().toString();
+    				new SaveFilesTask().execute(info);
+    			}
+    		}catch (Exception e){
+    			
+    		}
+    	}
+	}
 }
 
 

@@ -10,6 +10,8 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,7 +27,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
 
-public class FilePicker extends LinearLayout implements OnItemClickListener, OnClickListener, OnEditorActionListener {
+public class FilePicker extends LinearLayout implements OnItemClickListener, OnClickListener, OnEditorActionListener, TextWatcher {
 
 	// Used http://www.dreamincode.net/forums/topic/190013-creating-simple-file-chooser/ as a reference!
 	
@@ -39,6 +41,8 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 	File currentFile;
 	
 	OnFileSelectedListener onSelectedListener;
+	
+	String currentDirectoryPath;
 	
 	private FilePickerFileArrayAdapter adapter;
 	
@@ -64,14 +68,18 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 		clearFilter.setOnClickListener(this);
 		fileList.setOnItemClickListener(this);
 		filter.setOnEditorActionListener(this);
+		filter.addTextChangedListener(this);
 		
-		
+		clearFilter.setVisibility(GONE); // hide clear button initially.
+
 
 	}
 	
 	public void openDirectory(File f){
 		
 		currentFile = f;
+		
+		currentDirectoryPath = f.getPath();
 		
 		final String filterString = filter.getText().toString(); 
 		final String filterRegex = "(?i).*(" + filterString + ").*";
@@ -90,7 +98,7 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 					if(file.isDirectory()){// Is this a directory?
 						dirs.add(new FilePickerOption(file.getName(),"Folder", FilePickerOption.FileType.FOLDER, file.getAbsolutePath()));
 					}
-					else if(file.getName().endsWith(".txt")){
+					else if((file.getName().endsWith(".txt")) || (file.getName().endsWith(".hnautosave"))){
 						// It's not a directory, so it's a file!
 						Date d = new Date(file.lastModified());
 						files.add(new FilePickerOption(file.getName(), "Modified: " + dateFormat.format(d) + " " + timeFormat.format(d), FilePickerOption.FileType.FILE, file.getAbsolutePath()));
@@ -118,8 +126,8 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 		if(o.getType() == FilePickerOption.FileType.FOLDER){
 			filter.setText("");
 			openDirectory(new File(o.getPath()));
+			onSelectedListener.onFileSelected(o); // issue callback
 		}else if (o.getType() == FilePickerOption.FileType.FILE){
-			// open the file
 			onSelectedListener.onFileSelected(o); // issue callback
 
 		}
@@ -128,11 +136,12 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 	public void onClick(View v) {
 		if(v == upLevel){
 			if(!currentFile.getAbsolutePath().equals("/")){ // only navigate up if we aren't at root
+				filter.setText("");
 				openDirectory(currentFile.getParentFile());
 			}
 		}else if(v==clearFilter){
 			filter.setText("");
-			openDirectory(currentFile);
+//			openDirectory(currentFile);
 		}
 		
 	}
@@ -151,6 +160,33 @@ public class FilePicker extends LinearLayout implements OnItemClickListener, OnC
 
 	public void setFileSelectedListener(OnFileSelectedListener o) {
 		onSelectedListener = o;	
+	}
+	
+	public String getCurrentDirectoryPath(){
+		return currentDirectoryPath;
+	}
+
+	public void afterTextChanged(Editable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+			int arg3) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onTextChanged(CharSequence s, int arg1, int arg2, int arg3) {
+		// TODO Auto-generated method stub
+		openDirectory(currentFile);
+		if(s.length() == 0){
+			clearFilter.setVisibility(GONE);
+		}
+		else{
+			clearFilter.setVisibility(VISIBLE);
+		}
+
 	}
 
 }
