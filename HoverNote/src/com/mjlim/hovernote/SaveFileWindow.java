@@ -38,8 +38,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
-public class SaveFileWindow extends FloatingModalWindow implements OnKeyListener, OnClickListener, OnFileSelectedListener{
+public class SaveFileWindow extends FloatingModalWindow implements OnKeyListener, OnClickListener, OnFileSelectedListener, OnEditorActionListener{
 
 	ImageView bPaste, bCopy, bClose, bMini, bShare, bSave, bSettings;
 	FilePicker filePicker;
@@ -64,6 +66,7 @@ public class SaveFileWindow extends FloatingModalWindow implements OnKeyListener
 		
 		filePicker.setOnKeyListener(this);
 		fileName.setOnKeyListener(this);
+		fileName.setOnEditorActionListener(this);
 		filePicker.setFileSelectedListener(this);
 		
 		filePicker.openDirectory(new File(defaultLocation));
@@ -97,22 +100,33 @@ public class SaveFileWindow extends FloatingModalWindow implements OnKeyListener
 
 	public void onClick(View v) {
 		if(v==saveButton){
-			try{
-				if(fileName.getText().charAt(0) == '/')
-				{ // this is a path, so assume we know what we're doing, and just save to it
-					sd.saveFile(fileName.getText().toString());
-				}else{ // not a path, so we must use the file picker's current directory path
-					String fn = fileName.getText().toString();
-					if(!((fn.endsWith(".txt")) || (fn.endsWith(".hnautosave")))){fn = fn + ".txt";} // if the filename doesn't end with .txt or .hnautosave, append .txt
-					String saveToPath = filePicker.getCurrentDirectoryPath() + "/" + fn;
-					sd.saveFile(saveToPath);
-					this.dismiss();
-				}
-			}catch(Exception e){
-			
-			}
+			doSave();
 		}
 	}
+
+	public boolean onEditorAction(TextView v, int action, KeyEvent arg2) {
+		if(v == fileName){
+			doSave();
+			return true;
+		}
+		return false;
+	}
 	
+	public void doSave(){
+		try{
+			if(fileName.getText().charAt(0) == '/')
+			{ // this is a path, so assume we know what we're doing, and just save to it
+				sd.saveFile(fileName.getText().toString());
+			}else{ // not a path, so we must use the file picker's current directory path
+				String fn = fileName.getText().toString();
+				if(!((fn.endsWith(".txt")) || (fn.endsWith(".hnautosave")))){fn = fn + ".txt";} // if the filename doesn't end with .txt or .hnautosave, append .txt
+				String saveToPath = filePicker.getCurrentDirectoryPath() + "/" + fn;
+				sd.saveFile(saveToPath);
+				this.dismiss();
+			}
+		}catch(Exception e){
+		
+		}
+	}
 
 }

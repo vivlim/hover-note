@@ -106,12 +106,12 @@ public final class R {
         public static final int resizeHandle=0x7f09001c;
         public static final int save=0x7f090023;
         public static final int saveDialog=0x7f090015;
-        public static final int saveOver=0x7f09001e;
-        public static final int scrollView1=0x7f09001f;
+        public static final int saveOver=0x7f09001f;
+        public static final int scrollView1=0x7f09001d;
         public static final int seekTransparencyBar=0x7f090026;
         public static final int settingsDialog=0x7f090016;
         public static final int textView1=0x7f090011;
-        public static final int textView2=0x7f09001d;
+        public static final int textView2=0x7f09001e;
         public static final int upLevel=0x7f09000a;
         public static final int viewFlipper=0x7f090013;
         public static final int windowTitle=0x7f09001b;
