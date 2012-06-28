@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fadeScrollbars="false">
-
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/autosaveUnfocus" />
-
+
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
@@ -35,27 +35,54 @@
                 android:padding="3dp"
                 android:paddingLeft="5dp"
                 android:text="@string/windowTransparency" />
-
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp" >
-
+
                 <SeekBar
                     android:id="@+id/seekTransparencyBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1" />
-
+
                 <Button
                     android:id="@+id/bDefaultTransparency"
                     android:layout_width="175dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/defaultTransparency" />
-
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="3dp"
+                android:paddingLeft="5dp"
+                android:text="@string/fontStyle" />
+
+            <Spinner
+                android:id="@+id/spinnerFontChoices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/font_choices"
+                android:prompt="@string/promptFontChoices" />
+
+            <SeekBar
+                android:id="@+id/seekFontSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/fontSample"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fontsample" />
 
         </LinearLayout>
 

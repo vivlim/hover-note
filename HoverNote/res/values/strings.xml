@@ -28,5 +28,8 @@
         <string name="open">Open</string>
         <string name="saveDialogTitle">Locations:</string>
         <string name="autosaveUnfocus">Autosave when unfocusing a note</string>
+        <string name="fontStyle">Font Style</string>
+        <string name="promptFontChoices">Font Styles</string>
+        <string name="fontsample">The quick brown fox jumps over the lazy dog.</string>
 
 </resources>

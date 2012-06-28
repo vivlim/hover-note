@@ -192,7 +192,6 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
 		saveDialog.setNote(this);
 		
 		clipboard = (ClipboardManager)context.getSystemService(Activity.CLIPBOARD_SERVICE); // retrieve clipboardmanager, to be used with copy and paste.
-		
 		this.focus(); 
 		
 	}
@@ -611,6 +610,15 @@ public class HoverNoteView extends LinearLayout implements OnKeyListener, OnTouc
     			
     		}
     	}
+	}
+	
+	public void setFontFace(int res)
+	{
+		ed.setTextAppearance(context, res);
+	}
+	public void setFontSize(float size)
+	{
+		ed.setTextSize(size);
 	}
 }
 

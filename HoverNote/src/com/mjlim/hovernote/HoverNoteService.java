@@ -72,6 +72,8 @@ public class HoverNoteService extends Service {
 	SharedPreferences settings;
 	private float defaultAlpha = 1;
 	private boolean notifOnClose = true;
+	private float fontSize;
+	private int fontFace;
 		
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -91,6 +93,8 @@ public class HoverNoteService extends Service {
 		settings = getSharedPreferences(PREFS_NAME, 0);
 		defaultAlpha = settings.getFloat("defaultAlpha", 1);
 		notifOnClose = settings.getBoolean("notifOnClose", true);
+		fontSize = settings.getFloat("fontSize", 16);
+		fontFace = settings.getInt("fontFace", R.style.defaultfont);
 		HoverNoteView.autosaveOnUnfocus = settings.getBoolean("autosaveOnUnfocus", false);
 		
 
@@ -109,6 +113,8 @@ public class HoverNoteService extends Service {
 		editor.putFloat("defaultAlpha", defaultAlpha);
 		editor.putBoolean("notifOnClose", notifOnClose);
 		editor.putBoolean("autosaveOnUnfocus", HoverNoteView.autosaveOnUnfocus);
+		editor.putFloat("fontSize", fontSize);
+		editor.putInt("fontFace", fontFace);
 		editor.commit();
 	}
 	
@@ -183,6 +189,8 @@ public class HoverNoteService extends Service {
 		HoverNoteView oView = new HoverNoteView(this, wm, ((oViews.size()+1)*30) % (screenHeight - 200), animation);
 		oView.setText(s);
 		oView.setAlpha(defaultAlpha);
+		oView.setFontFace(fontFace);
+		oView.setFontSize(fontSize);
 		oViews.add(oView);
 		return oView;
 		
@@ -276,6 +284,18 @@ public class HoverNoteService extends Service {
 	}
 	public boolean getAutosave(){
 		return HoverNoteView.autosaveOnUnfocus;
+	}
+	public float getFontSize(){
+		return fontSize;
+	}
+	public void setFontSize(float fontSize){
+		this.fontSize = fontSize;
+	}
+	public int getFontFace(){
+		return fontFace;
+	}
+	public void setFontFace(int fontFace){
+		this.fontFace = fontFace;
 	}
 	
 }

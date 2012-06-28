@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="defaultfont">
+        <item name="android:typeface">normal</item>
+    </style>
+    
+    <style name="monospacefont">
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="seriffont">
+        <item name="android:typeface">serif</item>
+    </style>
+    
+</resources>
